@@ -23,7 +23,7 @@ def query():
     if request.method == "POST":
         if url_query is None:
             return jsonify_str({'error': 'Please upload or add link image.'})
-        results = query_img("test2.PNG", data)
+        results = query_img(url_query, data)
         return jsonify_str({"results": results})
 
 

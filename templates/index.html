@@ -12,13 +12,13 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1 align="center">Content Base Image Retrieval (CBIR)</h1>
-    <p align="center">Image Retrieval System based on content using sift feature</p>
+    <h1 align="center">Logo Matching</h1>
+    <p align="center">Logo Matching System based on content using sift feature</p>
   </div>
 
   <div class="row">
     <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 border border-primary">
-      <h3 align="center">Query</h3>
+      <h3 align="center">Logo</h3>
       <form id="upload-file" method="POST" enctype="multipart/form-data">
         <input data-label="Upload" class="filepicker" multiple="" type="file"
                name="file" id="origin_picture"
@@ -32,13 +32,13 @@
       <h3 align="center">Results</h3>
       <hr>
       <div class="images">
-        <div class="row">
-          <div class="col-lg-4 col-xl-4" align="center">
-              <img class="img-responsive img" src="{{ url_for('static', filename='imgs/000001.jpg') }}" alt="Chania" style="width:100%">
-              <h4>000001.jpg</h4>
-          </div>
+<!--        <div class="row">-->
+<!--          <div class="col-lg-4 col-xl-4" align="center">-->
+<!--              <img class="img-responsive img" src="{{ url_for('static', filename='imgs/000001.jpg') }}" alt="Chania" style="width:100%">-->
+<!--              <h4>000001.jpg</h4>-->
+<!--          </div>-->
 
-        </div>
+<!--        </div>-->
 
       </div>
     </div>
@@ -105,28 +105,20 @@
             }
 
             results = result["results"];
+            console.log(results);
 
-            <div class="row">
-          <div class="col-lg-4 col-xl-4" align="center">
-              <img class="img-responsive img" src="{{ url_for('static', filename='imgs/000001.jpg') }}" alt="Chania" style="width:100%">
-              <h4>000001.jpg</h4>
-          </div>
-
-        </div>
+            $('.images').empty();
             results.forEach(function(value, i){
               if (i % 3 == 0){
-                $('#images').append('<div class="row" id='row_result'></div>')
+                $('.images').append('<div class="row"></div>');
 
               }
+<!--              console.log(value);-->
+              v = "/static/" + value ;
+              str_img = '<div class="col-lg-4 col-xl-4" align="center"><img class="img-responsive img" src="' + v + '" alt="Chania" style="width:100%"><h4>000001.jpg</h4>';
+<!--              console.log(str_img);-->
+              $('.images').children().last().append(str_img);
 
-              var count = $('#images').children().last().children().length;
-              if (count < 3):
-                row = $('#images').children().last()
-                row.append('
-                <div class="col-lg-4 col-xl-4" align="center">
-                  <img class="img-responsive img" src="{{ url_for('static', filename='imgs/000001.jpg') }}" alt="Chania" style="width:100%">
-                <h4>000001.jpg</h4>
-          </div>')
 
             });
 
