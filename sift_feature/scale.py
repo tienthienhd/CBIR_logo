@@ -1,7 +1,7 @@
 from scipy.ndimage.filters import gaussian_filter
 from scipy import misc
 import numpy as np
-
+from scipy.ndimage import imread
 
 def scale_space(image, n_octaves=4, s=2):
     n_blur = s + 3
@@ -27,10 +27,11 @@ def scale_space(image, n_octaves=4, s=2):
             b.append(gaussian_filter(img_resize[0], sigmas[i, j]))
         blured.append(b)
     print(blured)
+    return blured
 
+img = imread('test.jpg', flatten=True)
+print(img.shape)
 
-scale_space([[1, 2, 3],
-             [3, 4, 5],
-             [4, 5, 6]])
+scale_space(img)
 
 
