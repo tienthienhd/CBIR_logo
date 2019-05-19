@@ -113,11 +113,10 @@
                 $('.images').append('<div class="row"></div>');
 
               }
-<!--              console.log(value);-->
               v = "/static/" + value ;
-              str_img = '<div class="col-lg-4 col-xl-4" align="center"><img class="img-responsive img" src="' + v + '" alt="Chania" style="width:100%"><h4>000001.jpg</h4>';
-<!--              console.log(str_img);-->
-              $('.images').children().last().append(str_img);
+              str_img = '<div class="col-lg-4 col-xl-4" align="center"><img class="img-responsive img" src="' + v + '" alt="Chania" style="width:100%"><h4>' + value + '</h4>';
+              a_tag = '<a href="/match?img_path=' + value + '">' + str_img +'</a>'
+              $('.images').children().last().append(a_tag);
 
 
             });

@@ -11,9 +11,10 @@
 </head>
 <body>
   <div class="container">
-    <a href="#"><button>Back</button></a>
-    <img class="img-responsive" src="{{ url_for('static', filename='imgs/000001.jpg') }}" alt="test" style="width:100%">
-    <h2 align="center">000001.jpg</h2>
+    <img class="img-responsive" id="non_filter" src="{{ url_for('static', filename=non_filter) }}" alt="test" style="width:100%">
+    <img class="img-responsive" id="filtered" src="{{ url_for('static', filename=filtered) }}" alt="test" style="width:100%">
   </div>
 </body>
+
+
 </html>
