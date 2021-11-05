@@ -1,3 +1,4 @@
+import cv2.cv2
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import os
@@ -10,19 +11,38 @@ app = Flask(__name__)
 
 from sift_feature.query import query_img, match_and_box
 import json
-with open("sift_feature/dict_logo.json") as json_file:
-    data = json.load(json_file)
+
+# with open("sift_feature/dict_logo.json") as json_file:
+#     data = json.load(json_file)
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
+# @app.route('/query', methods=['GET', 'POST'])
+# def query():
+#     if request.method == "POST":
+#         if url_query is None:
+#             return jsonify_str({'error': 'Please upload or add link image.'})
+#         results = query_img(url_query, data)
+#         print('Finished query----------------')
+#         print(results)
+#         return jsonify_str({"results": results})
+
 @app.route('/query', methods=['GET', 'POST'])
 def query():
+    from sift_feature.sift_query import Query_Image
     if request.method == "POST":
         if url_query is None:
             return jsonify_str({'error': 'Please upload or add link image.'})
-        results = query_img(url_query, data)
+        Q = Query_Image()
+
+        path_img_train = "/home/huyphuong99/Desktop/material/test/pepsicoca/coca2.jpg"
+        img_train = cv2.imread(path_img_train, cv2.COLOR_BGR2GRAY)
+        img_query = cv2.imread(url_query, cv2.COLOR_BGR2GRAY)
+        results = Q.match_box(img_query, img_train)
         print('Finished query----------------')
         print(results)
         return jsonify_str({"results": results})
@@ -37,7 +57,6 @@ def match():
         os.remove('static/imgs/matched_kp.png')
     if os.path.exists('static/imgs/matched_kp_filtered.png'):
         os.remove('static/imgs/matched_kp_filtered.png')
-
 
     match_and_box(img_path_1=url_query, img_path_2=img_path)
 
@@ -72,14 +91,15 @@ def nocache(view):
         response.headers['Expires'] = '-1'
         return response
 
-
     return update_wrapper(no_cache, view)
+
 
 @app.route('/show_result/<img>')
 def show_result(img):
     # preprocess
 
     return render_template('result_single.html')
+
 
 def jsonify_str(output_list):
     with app.app_context():
@@ -88,9 +108,11 @@ def jsonify_str(output_list):
 
     return result
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/upload_file', methods=['GET', 'POST'])
 def upload_file():
@@ -112,7 +134,6 @@ def upload_file():
             global url_query
             url_query = url_local
             return 'Ok'
-
 
 
 if __name__ == "__main__":

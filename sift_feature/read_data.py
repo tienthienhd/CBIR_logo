@@ -5,9 +5,9 @@ import os
 
 sift = cv2.xfeatures2d.SIFT_create()
 
-folder_data = "data/"
+folder_data = "/home/huyphuong99/PycharmProjects/project_outsource/CBIR_logo/data"
 
-with open("data.json") as json_file:
+with open(os.path.join(folder_data, "data.json")) as json_file:
     data = json.load(json_file)
 # print(len(data.keys()))
 file_dict = data['file']
@@ -60,7 +60,7 @@ for key in file_dict.keys():
             save[filename]["sub_img"].append(boxes)
 
 test = json.dumps(save)
-f = open("dict_test.json", "w")
+f = open("format_data_save.json", "w")
 f.write(test)
 f.close()
 

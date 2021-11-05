@@ -8,6 +8,7 @@ import numpy.linalg
 import matplotlib.pyplot as plt
 import cv2
 
+
 def detect_keypoints(imagename, threshold):
     # SIFT Detector 
     # --------------
@@ -59,7 +60,7 @@ def detect_keypoints(imagename, threshold):
     for i in range(4):
         for j in range(6):
             fig.add_subplot(4, 6, i * 6 + j + 1)
-            plt.imshow(list_blur[i][:,:,j], cmap='gray')
+            plt.imshow(list_blur[i][:, :, j], cmap='gray')
     plt.show()
 
     # Initialize Difference-of-Gaussians (DoG) pyramids
@@ -81,11 +82,11 @@ def detect_keypoints(imagename, threshold):
     list_dog.append(diffpyrlvl3)
     list_dog.append(diffpyrlvl4)
 
-    fig_dog = plt.figure(figsize=(4,5))
+    fig_dog = plt.figure(figsize=(4, 5))
     for i in range(4):
         for j in range(5):
             fig_dog.add_subplot(4, 5, i * 5 + j + 1)
-            plt.imshow(list_dog[i][:,:,j], cmap="gray")
+            plt.imshow(list_dog[i][:, :, j], cmap="gray")
     plt.show()
 
     # Initialize pyramids to store extrema locations
@@ -105,8 +106,8 @@ def detect_keypoints(imagename, threshold):
                 if np.absolute(diffpyrlvl1[j, k, i]) < threshold:
                     continue
 
-                maxbool = (diffpyrlvl1[j, k, i] > 0)#xet so nay la am hay duong
-                minbool = (diffpyrlvl1[j, k, i] < 0)#xet so nay la am hay duong
+                maxbool = (diffpyrlvl1[j, k, i] > 0)  # xet so nay la am hay duong
+                minbool = (diffpyrlvl1[j, k, i] < 0)  # xet so nay la am hay duong
 
                 for di in range(-1, 2):
                     for dj in range(-1, 2):
@@ -125,7 +126,8 @@ def detect_keypoints(imagename, threshold):
                         break
 
                 if maxbool or minbool:
-                    dx = (diffpyrlvl1[j, k + 1, i] - diffpyrlvl1[j, k - 1, i]) * 0.5 / 255#dao ham theo x va dua ve 0 1
+                    dx = (diffpyrlvl1[j, k + 1, i] - diffpyrlvl1[
+                        j, k - 1, i]) * 0.5 / 255  # dao ham theo x va dua ve 0 1
                     dy = (diffpyrlvl1[j + 1, k, i] - diffpyrlvl1[j - 1, k, i]) * 0.5 / 255
                     ds = (diffpyrlvl1[j, k, i + 1] - diffpyrlvl1[j, k, i - 1]) * 0.5 / 255
                     dxx = (diffpyrlvl1[j, k + 1, i] + diffpyrlvl1[j, k - 1, i] - 2 * diffpyrlvl1[j, k, i]) * 1.0 / 255
@@ -138,9 +140,9 @@ def detect_keypoints(imagename, threshold):
                     dys = (diffpyrlvl1[j + 1, k, i + 1] - diffpyrlvl1[j - 1, k, i + 1] - diffpyrlvl1[j + 1, k, i - 1] +
                            diffpyrlvl1[j - 1, k, i - 1]) * 0.25 / 255
 
-                    dD = np.matrix([[dx], [dy], [ds]])#ma tran  3x1
-                    H = np.matrix([[dxx, dxy, dxs], [dxy, dyy, dys], [dxs, dys, dss]])#ma tran 3x3
-                    x_hat = numpy.linalg.lstsq(H, dD)[0]#
+                    dD = np.matrix([[dx], [dy], [ds]])  # ma tran  3x1
+                    H = np.matrix([[dxx, dxy, dxs], [dxy, dyy, dys], [dxs, dys, dss]])  # ma tran 3x3
+                    x_hat = numpy.linalg.lstsq(H, dD)[0]  #
                     D_x_hat = diffpyrlvl1[j, k, i] + 0.5 * np.dot(dD.transpose(), x_hat)
 
                     r = 10.0
@@ -310,16 +312,16 @@ def detect_keypoints(imagename, threshold):
     print("Number of extrema in third octave: %d" % np.sum(extrpyrlvl3))
     print("Number of extrema in fourth octave: %d" % np.sum(extrpyrlvl4))
 
-    #tinh toan do lon va huong cua moi point tren moi scale
+    # tinh toan do lon va huong cua moi point tren moi scale
     # Gradient magnitude and orientation for each image sample point at each scale
 
-    #do lon chua hieu vi sao 3 chieu
+    # do lon chua hieu vi sao 3 chieu
     magpyrlvl1 = np.zeros((doubled.shape[0], doubled.shape[1], 3))
     magpyrlvl2 = np.zeros((normal.shape[0], normal.shape[1], 3))
     magpyrlvl3 = np.zeros((halved.shape[0], halved.shape[1], 3))
     magpyrlvl4 = np.zeros((quartered.shape[0], quartered.shape[1], 3))
 
-    #huong
+    # huong
     oripyrlvl1 = np.zeros((doubled.shape[0], doubled.shape[1], 3))
     oripyrlvl2 = np.zeros((normal.shape[0], normal.shape[1], 3))
     oripyrlvl3 = np.zeros((halved.shape[0], halved.shape[1], 3))

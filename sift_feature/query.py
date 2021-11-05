@@ -5,24 +5,24 @@ from sklearn.cluster import DBSCAN
 import time
 import matplotlib.pyplot as plt
 
-
 sift = cv2.xfeatures2d.SIFT_create()
 threshold = 70
 rate = 0.65
 
 start = time.time()
 
+
 def query_img(link, data):
     result_link = []
     result_key = []
     result_lenth = []
 
-    img = cv2.imread(link) #cv2.IMREAD_GRAYSCALE
+    img = cv2.imread(link)  # cv2.IMREAD_GRAYSCALE
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     kp_query, des_query = sift.detectAndCompute(img, None)
-    des_query = np.array(des_query, dtype=np.float32)
+    des_query: np.ndarray = np.array(des_query, dtype=np.float32)
     for key in data.keys():
-        infor_img = data[key]
+        infor_img: dict = data[key]
         name = infor_img["class"]
         boxes = infor_img["sub_img"]
 
@@ -31,6 +31,7 @@ def query_img(link, data):
             des = box["des"]
             des = np.array(des, dtype=np.float32)
             keypoint = []
+            # k is a dictionary, kp is a list
             for k in kp:
                 value_x = k["x"]
                 value_y = k["y"]
@@ -55,10 +56,10 @@ def query_img(link, data):
         result_link.append(result_key[i])
     return result_link
 
+
 def matching(kp1, des1, kp2, des2):
     bf = cv2.BFMatcher()
     matches = bf.knnMatch(des1, des2, k=2)
-
 
     good = []
     for m, n in matches:
@@ -123,14 +124,14 @@ def match_and_box(img_path_1, img_path_2):
 
     good = []
     for m, n in matches:
-        good.append(m)
-        # if m.distance < 0.7*n.distance:
-        #     good.append(m)
+        # good.append(m)
+        if m.distance < .75 * n.distance:
+            good.append(m)
 
     matching_result = cv2.drawMatches(img1, kp1, img2, kp2, good, None, flags=2)
-    #
     plt.imshow(matching_result, cmap='gray')
-    plt.savefig('static/imgs/matched_kp.png')
+    plt.show()
+    # plt.savefig('static/imgs/matched_kp.jpg')
 
     MIN_MATCH_COUNT = 10
     if len(good) > MIN_MATCH_COUNT:
@@ -154,7 +155,8 @@ def match_and_box(img_path_1, img_path_2):
                        singlePointColor=None,
                        matchesMask=matchesMask,  # draw only inliers
                        flags=2)
-
+    print(good, "\n", len(good))
     img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
     plt.imshow(img3, 'gray')
-    plt.savefig('static/imgs/matched_kp_filted.png')
+    plt.show()
+    # plt.savefig('static/imgs/matched_kp_filted.jpg')
