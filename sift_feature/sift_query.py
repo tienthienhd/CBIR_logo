@@ -87,7 +87,7 @@ class Query_Image:
             angle = sub_kp["angle"]
             response = sub_kp["response"]
             octave = sub_kp["octave"]
-            keypoint.append(cv2.Keypoint(x, y, _size=size, _angle=angle, _response=response, _octave=octave))
+            keypoint.append(cv2.KeyPoint(x=x, y=y, size=size, angle=angle, response=response, octave=octave))
         return keypoint
 
     def load_file_keypoint(self, file_path):
@@ -99,6 +99,7 @@ class Query_Image:
             kp = sub_inf["kp"]
             des = sub_inf["des"]
             self.take_inf_kp(kp)
+
 
     def compare_img(self, kp1, des1, kp2, des2):
         good = self.matching(des1, des2, kp2)
@@ -127,7 +128,7 @@ class Query_Image:
     def match_box(self, img1: np.ndarray, img2: np.ndarray):
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
-        self.save_keypoint(kp1, kp2, des1, des2)
+        # self.save_keypoint(kp1, kp2, des1, des2)
         # print(kp1, "\n", kp2)
         # img = cv2.drawKeypoints(img2,kp2, img2)
         # plt.imshow(img, cmap='gray')
@@ -144,8 +145,8 @@ class Query_Image:
                            flags=2)
 
         img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
-        plt.imshow(img3)
-        plt.title(f"Image: | Good: {len(good)}")
-        plt.show()
-        plt.savefig('static/imgs/matched_kp_filted.jpg')
+        # plt.imshow(img3)
+        # plt.title(f"Image: | Good: {len(good)}")
+        # plt.show()
+        # plt.savefig('static/imgs/matched_kp_filted.jpg')
         return [check]
