@@ -22,7 +22,7 @@ class Query_Image:
         search_params = dict(checks=50)
 
         flann = cv2.FlannBasedMatcher(index_params, search_params)
-        matches = flann.knnMatch(des1, des2, k=2)
+        matches = flann.knnMatch(des1, np.float32(des2), k=2)
 
         x = []
         for m, n in matches:
@@ -79,7 +79,7 @@ class Query_Image:
             f.write(test)
 
     def take_inf_kp(self, kp):
-        keypoint = []
+        keypoint = ()
         for sub_kp in kp:
             x = sub_kp["x"]
             y = sub_kp["y"]
@@ -87,7 +87,7 @@ class Query_Image:
             angle = sub_kp["angle"]
             response = sub_kp["response"]
             octave = sub_kp["octave"]
-            keypoint.append(cv2.KeyPoint(x=x, y=y, size=size, angle=angle, response=response, octave=octave))
+            keypoint += (cv2.KeyPoint(x=x, y=y, size=size, angle=angle, response=response, octave=octave),)
         return keypoint
 
     def load_file_keypoint(self, file_path):
@@ -95,11 +95,15 @@ class Query_Image:
             data = json.load(json_file)
 
         info = data["pepsi"]["imgs"]
+        keypoints = []
+        deses = []
         for sub_inf in info:
             kp = sub_inf["kp"]
-            des = sub_inf["des"]
-            self.take_inf_kp(kp)
-
+            des = np.array(sub_inf["des"])
+            take_kp = self.take_inf_kp(kp)
+            keypoints.append(take_kp)
+            deses.append(des)
+        return keypoints, deses
 
     def compare_img(self, kp1, des1, kp2, des2):
         good = self.matching(des1, des2, kp2)
@@ -125,28 +129,46 @@ class Query_Image:
             # img2 = cv2.polylines(img2, [np.int32(dst)], True, (50, 50, 50), 3, cv2.LINE_AA)
         return img2, matchesMask
 
-    def match_box(self, img1: np.ndarray, img2: np.ndarray):
+    def check_two_img(self, img1, img2):
+        path_json = "/home/huyphuong99/PycharmProjects/project_outsource/CBIR_logo/data/file_test.json"
+        keypoints, des = self.load_file_keypoint(path_json)
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
-        # self.save_keypoint(kp1, kp2, des1, des2)
-        # print(kp1, "\n", kp2)
-        # img = cv2.drawKeypoints(img2,kp2, img2)
-        # plt.imshow(img, cmap='gray')
-        # plt.show()
-        good, check = self.compare_img(kp1, des1, kp2, des2)
-        # matching_result = cv2.drawMatches(img1, kp1, img2, kp2, good, None, flags=2)
-        # plt.imshow(matching_result, cmap='gray')
-        # plt.show()
-        img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
-        plt.savefig('static/imgs/matched_kp.jpg')
-        draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
-                           singlePointColor=None,
-                           matchesMask=matchesMask,  # draw only inliers
-                           flags=2)
+        good1, check1 = [], []
+        good2, check2 = [], []
+        for i in range(len(keypoints)):
+            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, keypoints[i], des[i])
+            good1.append(good_of_kp1)
+            check1.append(check_of_kp1)
+            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, keypoints[i], des[i])
+            good2.append(good_of_kp2)
+            check2.append(check_of_kp2)
+        print(len(good1[0]), len(good1[1]), '\n', check1)
+        print(len(good2[0]), len(good2[1]), '\n', check2)
 
-        img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
-        # plt.imshow(img3)
-        # plt.title(f"Image: | Good: {len(good)}")
-        # plt.show()
-        # plt.savefig('static/imgs/matched_kp_filted.jpg')
-        return [check]
+        def match_box(self, img1: np.ndarray, img2: np.ndarray):
+            kp1, des1 = self.get_keypoint(img1)
+            kp2, des2 = self.get_keypoint(img2)
+            # save to file json when have more new logo
+            # self.save_keypoint(kp1, kp2, des1, des2)
+            # print(kp1, "\n", kp2)
+            # img = cv2.drawKeypoints(img2,kp2, img2)
+            # plt.imshow(img, cmap='gray')
+            # plt.show()
+            good, check = self.compare_img(kp1, des1, kp2, des2)
+            # matching_result = cv2.drawMatches(img1, kp1, img2, kp2, good, None, flags=2)
+            # plt.imshow(matching_result, cmap='gray')
+            # plt.show()
+            img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
+            # plt.savefig('static/imgs/matched_kp.jpg')
+            draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
+                               singlePointColor=None,
+                               matchesMask=matchesMask,  # draw only inliers
+                               flags=2)
+
+            img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
+            # plt.imshow(img3)
+            # plt.title(f"Image: | Good: {len(good)}")
+            # plt.show()
+            # plt.savefig('static/imgs/matched_kp_filted.jpg')
+            return [check]

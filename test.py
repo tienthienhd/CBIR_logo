@@ -13,13 +13,6 @@ def take_list(path="/home/huyphuong99/Desktop/material/test/pepsicoca", type_img
     return [path for path in glob.glob(os.path.join(path, type_img))]
 
 
-def preprocessing(img1, img2):
-    h1, w1, _ = img1.shape
-    h2, w2, _ = img2.shape
-    h, w = max(h1, h2), max(w1, w2)
-
-
-
 def handle(path1, path2):
     if os.path.exists(path1):
         img1 = read_img(path1)
@@ -41,17 +34,29 @@ def handle(path1, path2):
         print("-" * 50)
         print(f"Image is True: {count}|{total_img}, Totqal time: {_time}, Average time each image:{_time / total_img}")
 
+def compare(path1, path2):
+    if os.path.exists(path1) and os.path.exists(path2):
+        img1 = read_img(path1)
+        img2 = read_img(path2)
+    else:
+        raise print("Either path does not exist")
+    CompareImg.check_two_img(img1, img2)
+
 
 if __name__ == "__main__":
     st = time.time()
     path = "/home/huyphuong99/Desktop/material/test/pepsicoca"
-    path_img1 = "/home/huyphuong99/Desktop/material/test/pepsicoca/pepsi4.jpg"
-    path_img2 = "/home/huyphuong99/Desktop/material/test/pepsicoca/pepsilogo17.jpg"
+    path_img1 = f"{path}/pepsi02.jpg"
+    path_img2 = f"{path}/pepsilogo10.jpg"
     path_list_img = take_list()
     path_list_img_pepsi = take_list(type_img="pepsi*")
     path_list_img_coca = take_list(type_img="coca*")
+
+    logo1 = f"{path}/pepsi02.jpg"
+    logo2 = f"{path}/coca12.jpg"
     CompareImg = Query_Image()
-    handle(path_img1, path_img2)
+    compare(logo1, logo2)
+    # handle(path_img1, path_img2)
 
 
 # import cv2
