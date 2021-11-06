@@ -108,7 +108,7 @@ class Query_Image:
     def compare_img(self, kp1, des1, kp2, des2):
         good = self.matching(des1, des2, kp2)
         check = True
-        if len(good) <= self.threshold:
+        if len(good) < self.threshold:
             check = False
         return good, check
 
@@ -129,46 +129,48 @@ class Query_Image:
             # img2 = cv2.polylines(img2, [np.int32(dst)], True, (50, 50, 50), 3, cv2.LINE_AA)
         return img2, matchesMask
 
+    def visualize_match_point(self, img1, kp1, img2, kp2, good):
+        img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
+        draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
+                           singlePointColor=None,
+                           matchesMask=matchesMask,  # draw only inliers
+                           flags=2)
+        img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
+        plt.imshow(img3)
+        plt.title(f"Image: | Good: {len(good)}")
+        plt.show()
+        plt.savefig('static/imgs/matched_kp_filted.jpg')
+
+
     def check_two_img(self, img1, img2):
-        path_json = "/home/huyphuong99/PycharmProjects/project_outsource/CBIR_logo/data/file_test.json"
+        path_json = "./data/file_test.json"
         keypoints, des = self.load_file_keypoint(path_json)
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         good1, check1 = [], []
         good2, check2 = [], []
+        count1, count2 = 0, 0
         for i in range(len(keypoints)):
             good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, keypoints[i], des[i])
-            good1.append(good_of_kp1)
-            check1.append(check_of_kp1)
             good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, keypoints[i], des[i])
+            if check_of_kp1:
+                count1 += 1
+            if check_of_kp2:
+                count2 += 1
+            good1.append(good_of_kp1)
             good2.append(good_of_kp2)
-            check2.append(check_of_kp2)
+        half = round(len(good1) / 2)
+        if count1 >= half and count2 >= half:
+            print(f"Both pictures are of the same type of logo -> GOOD")
+        else:
+            print(f"Both images are different logo -> NOT GOOD")
+
         print(len(good1[0]), len(good1[1]), '\n', check1)
         print(len(good2[0]), len(good2[1]), '\n', check2)
 
-        def match_box(self, img1: np.ndarray, img2: np.ndarray):
-            kp1, des1 = self.get_keypoint(img1)
-            kp2, des2 = self.get_keypoint(img2)
-            # save to file json when have more new logo
-            # self.save_keypoint(kp1, kp2, des1, des2)
-            # print(kp1, "\n", kp2)
-            # img = cv2.drawKeypoints(img2,kp2, img2)
-            # plt.imshow(img, cmap='gray')
-            # plt.show()
-            good, check = self.compare_img(kp1, des1, kp2, des2)
-            # matching_result = cv2.drawMatches(img1, kp1, img2, kp2, good, None, flags=2)
-            # plt.imshow(matching_result, cmap='gray')
-            # plt.show()
-            img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
-            # plt.savefig('static/imgs/matched_kp.jpg')
-            draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
-                               singlePointColor=None,
-                               matchesMask=matchesMask,  # draw only inliers
-                               flags=2)
-
-            img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
-            # plt.imshow(img3)
-            # plt.title(f"Image: | Good: {len(good)}")
-            # plt.show()
-            # plt.savefig('static/imgs/matched_kp_filted.jpg')
-            return [check]
+    def match_box(self, img1: np.ndarray, img2: np.ndarray):
+        kp1, des1 = self.get_keypoint(img1)
+        kp2, des2 = self.get_keypoint(img2)
+        good, check = self.compare_img(kp1, des1, kp2, des2)
+        self.visualize_match_point(img1, kp1, img2, kp2, good)
+        return [check]

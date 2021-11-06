@@ -13,7 +13,7 @@ def take_list(path="/home/huyphuong99/Desktop/material/test/pepsicoca", type_img
     return [path for path in glob.glob(os.path.join(path, type_img))]
 
 
-def handle(path1, path2):
+def compare_img_logo(path1, path2):
     if os.path.exists(path1):
         img1 = read_img(path1)
 
@@ -34,7 +34,7 @@ def handle(path1, path2):
         print("-" * 50)
         print(f"Image is True: {count}|{total_img}, Totqal time: {_time}, Average time each image:{_time / total_img}")
 
-def compare(path1, path2):
+def compare_two_img(path1, path2):
     if os.path.exists(path1) and os.path.exists(path2):
         img1 = read_img(path1)
         img2 = read_img(path2)
@@ -53,34 +53,9 @@ if __name__ == "__main__":
     path_list_img_coca = take_list(type_img="coca*")
 
     logo1 = f"{path}/pepsi02.jpg"
-    logo2 = f"{path}/coca12.jpg"
+    logo2 = f"{path}/pepsi2.jpg"
     CompareImg = Query_Image()
-    compare(logo1, logo2)
-    # handle(path_img1, path_img2)
+    # compare_two_img(logo1, logo2)
+    compare_img_logo(path_img1, path_img2)
 
 
-# import cv2
-# import numpy as np
-# from matplotlib import pyplot as plt
-#
-# img_rgb = cv2.imread('/home/huyphuong99/Desktop/material/test/pepsicoca/pepsilogo16.jpg')
-# img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-# template = cv2.imread('/home/huyphuong99/Desktop/material/test/pepsicoca/pepsi08.jpg', 0)
-#
-# # plt.imshow(template)
-# # plt.show()
-# height, width = template.shape[::]
-# res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
-# plt.imshow(res, cmap='gray')
-# plt.show()
-#
-# threshold = 0.3 #For TM_CCOEFF_NORMED, larger values = good fit.
-#
-# loc = np.where(res >= threshold)
-#
-# for pt in zip(loc[::-1]):
-#     cv2.rectangle(img_rgb, pt, (pt[0] + width, pt[1] + height), (255, 0, 0), 1)
-#
-# cv2.imshow("Matched image", img_rgb)
-# cv2.waitKey()
-# cv2.destroyAllWindows()
