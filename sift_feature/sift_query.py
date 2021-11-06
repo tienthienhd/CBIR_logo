@@ -61,7 +61,6 @@ class Query_Image:
         for element in kp:
             result_dict["kp"].append(self.take_kp(element))
         result_dict["des"] = des.tolist()
-
         return result_dict
 
     def create_file_keypoint(self, kp: list, des: list[np.ndarray], type_img: str = "pepsi") -> dict:
@@ -87,7 +86,7 @@ class Query_Image:
             angle = sub_kp["angle"]
             response = sub_kp["response"]
             octave = sub_kp["octave"]
-            keypoint += (cv2.KeyPoint(x=x, y=y, size=size, angle=angle, response=response, octave=octave),)
+            keypoint += (cv2.KeyPoint(x, y, size=size, angle=angle, response=response, octave=octave),)
         return keypoint
 
     def load_file_keypoint(self, file_path):
@@ -129,6 +128,18 @@ class Query_Image:
             # img2 = cv2.polylines(img2, [np.int32(dst)], True, (50, 50, 50), 3, cv2.LINE_AA)
         return img2, matchesMask
 
+    def add_logo2json(self, file_json, imgs: list):
+        with open(file_json) as json_file:
+            data = json.load(json_file)
+        info: list = data["pepsi"]["imgs"]
+        for img in imgs:
+            kp, des = self.get_keypoint(img)
+            info.append(self.take_kp_des(kp, des))
+        data.update(info)
+        with open(file_json, 'w') as fp:
+            fp.write(json.dumps(data))
+        print("You added a logo success to file json")
+
     def visualize_match_point(self, img1, kp1, img2, kp2, good):
         img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
         draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
@@ -140,7 +151,6 @@ class Query_Image:
         plt.title(f"Image: | Good: {len(good)}")
         plt.show()
         plt.savefig('static/imgs/matched_kp_filted.jpg')
-
 
     def check_two_img(self, img1, img2):
         path_json = "./data/file_test.json"
@@ -172,5 +182,5 @@ class Query_Image:
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         good, check = self.compare_img(kp1, des1, kp2, des2)
-        self.visualize_match_point(img1, kp1, img2, kp2, good)
+        # self.visualize_match_point(img1, kp1, img2, kp2, good)
         return [check]
