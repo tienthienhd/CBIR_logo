@@ -24,9 +24,6 @@ app = Flask(__name__)
 from sift_feature.query import query_img, match_and_box
 
 
-# with open("sift_feature/dict_logo.json") as json_file:
-#     data = json.load(json_file)
-# @timeit
 class TLSAdapter(requests.adapters.HTTPAdapter):
     def init_poolmanager(self, connections, maxsize, block=False):
         """Create and initialize the urllib3 PoolManager."""
@@ -153,8 +150,7 @@ def add_logo2json():
         if logo is None:
             return jsonify_str({"error", "Please upload logo as input"})
         Q = Query_Image()
-        img = Q.read_img(logo)
-        result = Q.add_logo2json(img)
+        result = Q.add_logo2json(logo)
         return jsonify_str(result)
 
 @app.route("/checklogo", methods=["GET", "POST"])
@@ -164,7 +160,6 @@ def check_logo():
         if img is None:
             return jsonify_str({"error": "Please upload photos as input"})
         Q = Query_Image()
-        # img = Q.read_img(img)
         result = Q.check_img_have_logo(img[0])
         if result:
             return jsonify_str({"result": "Image have pepsi logo"})
