@@ -12,7 +12,7 @@ import ssl
 from urllib3 import poolmanager
 import re
 import io
-import  base64
+import base64
 from PIL import Image
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -30,11 +30,11 @@ class TLSAdapter(requests.adapters.HTTPAdapter):
         ctx = ssl.create_default_context()
         ctx.set_ciphers('DEFAULT@SECLEVEL=1')
         self.poolmanager = poolmanager.PoolManager(
-                num_pools=connections,
-                maxsize=maxsize,
-                block=block,
-                ssl_version=ssl.PROTOCOL_TLS,
-                ssl_context=ctx)
+            num_pools=connections,
+            maxsize=maxsize,
+            block=block,
+            ssl_version=ssl.PROTOCOL_TLS,
+            ssl_context=ctx)
 
 
 def url_to_image(url):
@@ -47,16 +47,19 @@ def url_to_image(url):
     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
     return image
 
+
 def is_support_type(filename):
     """Check type support"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def stream_to_image(stream):
     """Parser image in bytes"""
     npimg = np.fromstring(stream.read(), np.int8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     return img
+
 
 def string_to_image(img_string):
     """Parser image from base64"""
@@ -74,6 +77,7 @@ def string_to_image(img_string):
 
 class ImageException(Exception):
     pass
+
 
 def parse_request(images):
     imgs = []
@@ -124,9 +128,11 @@ def parse_args(*args):
     imgs, filenames = parse_request(images)
     return imgs, filenames
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
@@ -142,6 +148,7 @@ def query():
         print(results)
         return jsonify_str({"results": results})
 
+
 @app.route("/addlogo2json", methods=["GET", "POST"])
 def add_logo2json():
     image, filename = parse_args()
@@ -153,29 +160,32 @@ def add_logo2json():
         result = Q.add_logo2json(logo)
         return jsonify_str(result)
 
+
 @app.route("/checklogo", methods=["GET", "POST"])
 def check_logo():
     img, filenames = parse_args()
-    if request.method == "POST":
-        if img is None:
-            return jsonify_str({"error": "Please upload photos as input"})
-        Q = Query_Image()
-        result = Q.check_img_have_logo(img[0])
-        if result:
-            return jsonify_str({"result": "Image have pepsi logo"})
-        else:
-            return jsonify_str({"result": "Image not have pepsi logo"})
-        
+    try:
+        if request.method == "POST":
+            if img is None:
+                return jsonify_str({"error": "Please upload photos as input"})
+            Q = Query_Image()
+            result = Q.check_img_have_logo(img[0])
+            if result:
+                return jsonify_str({"result": "Image have pepsi logo"})
+            else:
+                return jsonify_str({"result": "Image not have pepsi logo"})
+    except Exception as e:
+        print(e)
+
 
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
-    img1, img2 = None, None
+    img, filenames = parse_args()
+    img1, img2 = img[0], img[1]
     if request.method == "POST":
         if img1 is None or img2 is None:
             return jsonify_str({"error": "Please chooses or upload two photos as input"})
         Q = Query_Image()
-        img1 = Q.read_img(img1)
-        img2 = Q.read_img(img2)
         result = Q.check_two_img(img1, img2)
         if result:
             return jsonify_str({"results": "Both pictures are of the SAME type of logo"})
