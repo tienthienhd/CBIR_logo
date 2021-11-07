@@ -66,14 +66,16 @@ def check_logo():
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
     img, filenames = parse_args()
-    img1, img2 = img[0], img[1]
+    img1, img2 = None, None
+    if len(img) == 2:
+        img1, img2 = img[0], img[1]
     if request.method == "POST":
         if img1 is None or img2 is None:
             return jsonify_str({"error": "Please chooses or upload two photos as input"})
         Q = Query_Image()
         result = Q.check_two_img(img1, img2)
         if result:
-            return jsonify_str({"results": "Both pictures are of the SAME type of logo"})
+            return jsonify_str({"results": "Both pictures are of the SAME logo of PEPSI"})
         else:
             return jsonify_str({"results": "Both images are DIFFERENT logo"})
 
@@ -92,24 +94,9 @@ def match():
 
     return render_template('results.html', non_filter='imgs/matched_kp.png', filtered='imgs/matched_kp_filted.png')
 
-
-# @app.after_request
-# def add_header(r):
-#     """
-#     Add headers to both force latest IE rendering engine or Chrome Frame,
-#     and also to cache the rendered page for 10 minutes.
-#     """
-#     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     r.headers["Pragma"] = "no-cache"
-#     r.headers["Expires"] = "0"
-#     r.headers['Cache-Control'] = 'public, max-age=0'
-#     return r
-
-
 from flask import make_response
 from functools import wraps, update_wrapper
 from datetime import datetime
-
 
 def nocache(view):
     @wraps(view)

@@ -25,10 +25,8 @@ class TLSAdapter(requests.adapters.HTTPAdapter):
             ssl_version=ssl.PROTOCOL_TLS,
             ssl_context=ctx)
 
-
 class ImageException(Exception):
     pass
-
 
 def url_to_image(url):
     """Download image from url"""
@@ -40,19 +38,16 @@ def url_to_image(url):
     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
     return image
 
-
 def is_support_type(filename):
     """Check type support"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 def stream_to_image(stream):
     """Parser image in bytes"""
     npimg = np.fromstring(stream.read(), np.int8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     return img
-
 
 def string_to_image(img_string):
     """Parser image from base64"""
@@ -66,7 +61,6 @@ def string_to_image(img_string):
         img = img[:, :, :3]
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return img
-
 
 def parse_request(images):
     imgs = []
