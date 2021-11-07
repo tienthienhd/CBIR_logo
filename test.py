@@ -42,23 +42,27 @@ def compare_two_img(path1, path2):
         raise print("Either path does not exist")
     CompareImg.check_two_img(img1, img2)
 
+def add2json(path_logo1, path_logo2):
+    path_file_json = "./data/file_keypoint.json"
+    logo1 = read_img(path_logo1)
+    logo2 = read_img(path_logo2)
+    CompareImg.add_logo2json(path_file_json, logo1)
+
 
 if __name__ == "__main__":
     st = time.time()
+    CompareImg = Query_Image()
     path = "/home/huyphuong99/Desktop/material/test/pepsicoca"
     path_img1 = f"{path}/pepsi02.jpg"
-    path_img2 = f"{path}/pepsilogo10.jpg"
+    path_img2 = f"{path}/pepsi8.jpg"
     path_list_img = take_list()
     path_list_img_pepsi = take_list(type_img="pepsi*")
     path_list_img_coca = take_list(type_img="coca*")
-    path_file_json = "./data/file_test.json"
-
-    logo1 = f"{path}/pepsilogo15.jpg"
-    logo2 = f"{path}/pepsilogo16.jpg"
-    CompareImg = Query_Image()
-    img1 = read_img(logo1)
-    img2 = read_img(logo2)
-    CompareImg.add_logo2json(path_file_json, [img1, img2])
-    # compare_two_img(logo1, logo2)
-    # compare_img_logo(path_img1, path_img2)
+    # result_compare = compare_two_img(path_img1, path_img2)
+    # compare_img_logo(logo2, logo2)
+    # img = cv2.imread(path_img1, cv2.COLOR_BGR2GRAY)
+    # CompareImg.check_img_have_logo(img)
+    # path_logo1 = f"{path}/pepsilogo21.jpeg"
+    # path_logo2 = f"{path}/pepsilogo18.jpg"
+    # add2json(path_logo1, path_logo2)
 

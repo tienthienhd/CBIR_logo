@@ -2,6 +2,7 @@ import cv2.cv2
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import os
+from sift_feature.sift_query import Query_Image
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 url_query = None
@@ -11,6 +12,7 @@ app = Flask(__name__)
 
 from sift_feature.query import query_img, match_and_box
 import json
+
 
 # with open("sift_feature/dict_logo.json") as json_file:
 #     data = json.load(json_file)
@@ -33,19 +35,58 @@ def index():
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
-    from sift_feature.sift_query import Query_Image
     if request.method == "POST":
         if url_query is None:
             return jsonify_str({'error': 'Please upload or add link image.'})
         Q = Query_Image()
-
-        path_img_train = "/home/huyphuong99/Desktop/material/test/pepsicoca/coca2.jpg"
+        path_img_train = "/home/huyphuong99/Desktop/material/test/pepsicoca/pepsilogo18.jpg"
         img_train = cv2.imread(path_img_train, cv2.COLOR_BGR2GRAY)
         img_query = cv2.imread(url_query, cv2.COLOR_BGR2GRAY)
         results = Q.match_box(img_query, img_train)
-        print('Finished query----------------')
+        print('Finished query\n----------------')
         print(results)
         return jsonify_str({"results": results})
+
+@app.route("/addlogo2json", methods=["GET", "POST"])
+def add_logo2json(logo):
+    if request.method == "POST":
+        if logo is None:
+            return jsonify_str({"error", "Please upload logo as input"})
+        Q = Query_Image()
+        img = Q.read_img(logo)
+        result = Q.add_logo2json(img)
+        return jsonify_str(result)
+
+
+
+
+@app.route("/checklogo", methods=["GET", "POST"])
+def check_logo(img):
+    if request.method == "POST":
+        if img is None:
+            return jsonify_str({"error": "Please upload photos as input"})
+        Q = Query_Image()
+        img = Q.read_img(img)
+        result = Q.check_img_have_logo(img)
+        if result:
+            return jsonify_str({"result": "Image have logo"})
+        else:
+            return jsonify_str({"result": "Image not have logo"})
+        
+
+@app.route("/compare", methods=["GET", "POST"])
+def compare(img1, img2):
+    if request.method == "POST":
+        if img1 is None or img2 is None:
+            return jsonify_str({"error": "Please chooses or upload two photos as input"})
+        Q = Query_Image()
+        img1 = Q.read_img(img1)
+        img2 = Q.read_img(img2)
+        result = Q.check_two_img(img1, img2)
+        if result:
+            return jsonify_str({"results": "Both pictures are of the SAME type of logo"})
+        else:
+            return jsonify_str({"results": "Both images are DIFFERENT logo"})
 
 
 @app.route('/match')

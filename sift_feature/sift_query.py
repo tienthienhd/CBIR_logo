@@ -16,7 +16,10 @@ class Query_Image:
     def query_img(self, link: str, data: dict):
         pass
 
-    def matching(self, des1, des2, kp2):
+    def read_img(self, img):
+        return cv2.imread(img, cv2.IMREAD_GRAYSCALE)
+
+    def matching(self, kp1, kp2, des1, des2):
         FLANN_INDEX_KDTREE = 0
         index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
         search_params = dict(checks=50)
@@ -74,11 +77,11 @@ class Query_Image:
     def save_keypoint(self, kp1, kp2, des1, des2, path_out: str = "./data"):
         r = self.create_file_keypoint([kp1, kp2], [des1, des2])
         test = json.dumps(r)
-        with open(os.path.join(path_out, "file_test.json"), "w") as f:
+        with open(os.path.join(path_out, "file_keypoint.json"), "w") as f:
             f.write(test)
 
     def take_inf_kp(self, kp):
-        keypoint = ()
+        keypoint = []
         for sub_kp in kp:
             x = sub_kp["x"]
             y = sub_kp["y"]
@@ -86,7 +89,7 @@ class Query_Image:
             angle = sub_kp["angle"]
             response = sub_kp["response"]
             octave = sub_kp["octave"]
-            keypoint += (cv2.KeyPoint(x, y, size=size, angle=angle, response=response, octave=octave),)
+            keypoint.append(cv2.KeyPoint(x, y, size=size, angle=angle, response=response, octave=octave))
         return keypoint
 
     def load_file_keypoint(self, file_path):
@@ -98,14 +101,14 @@ class Query_Image:
         deses = []
         for sub_inf in info:
             kp = sub_inf["kp"]
-            des = np.array(sub_inf["des"])
             take_kp = self.take_inf_kp(kp)
+            des = np.array(sub_inf["des"])
             keypoints.append(take_kp)
             deses.append(des)
         return keypoints, deses
 
     def compare_img(self, kp1, des1, kp2, des2):
-        good = self.matching(des1, des2, kp2)
+        good = self.matching(kp1, kp2, des1, des2)
         check = True
         if len(good) < self.threshold:
             check = False
@@ -128,17 +131,21 @@ class Query_Image:
             # img2 = cv2.polylines(img2, [np.int32(dst)], True, (50, 50, 50), 3, cv2.LINE_AA)
         return img2, matchesMask
 
-    def add_logo2json(self, file_json, imgs: list):
+    def add_logo2json(self, file_json, imgs):
+        if file_json is None:
+            file_json = "./data/file_keypoint.json"
         with open(file_json) as json_file:
             data = json.load(json_file)
         info: list = data["pepsi"]["imgs"]
+        if not isinstance(imgs, list):
+            imgs = [imgs]
         for img in imgs:
             kp, des = self.get_keypoint(img)
             info.append(self.take_kp_des(kp, des))
-        data.update(info)
         with open(file_json, 'w') as fp:
             fp.write(json.dumps(data))
         print("You added a logo success to file json")
+        return {"result:", "You added a logo success to file json"}
 
     def visualize_match_point(self, img1, kp1, img2, kp2, good):
         img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
@@ -152,35 +159,56 @@ class Query_Image:
         plt.show()
         plt.savefig('static/imgs/matched_kp_filted.jpg')
 
+    def check_img_have_logo(self, img):
+        path_json = "./data/file_keypoint.json"
+        list_kp, list_des = self.load_file_keypoint(path_json)
+        kp, des = self.get_keypoint(img)
+        goods, checks = [], []
+        count = 0
+        for i in range(len(list_kp)):
+            good, check = self.compare_img(kp, des, list_kp[i], list_des[i])
+            if check:
+                count += 1
+            goods.append(len(good))
+        half = round(len(goods) / 2)
+        if count >= half:
+            print(f"Image have logo, CORRECT: {count}/{len(goods)}")
+            return True
+        else:
+            print(f"Image not have logo, CORRECT:  {count}/{len(goods)}")
+            return False
+
     def check_two_img(self, img1, img2):
-        path_json = "./data/file_test.json"
-        keypoints, des = self.load_file_keypoint(path_json)
+        path_json = "./data/file_keypoint.json"
+        list_kp, list_des = self.load_file_keypoint(path_json)
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         good1, check1 = [], []
         good2, check2 = [], []
         count1, count2 = 0, 0
-        for i in range(len(keypoints)):
-            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, keypoints[i], des[i])
-            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, keypoints[i], des[i])
+        for i in range(len(list_kp)):
+            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, list_kp[i], list_des[i])
+            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, list_kp[i], list_des[i])
+            # self.visualize_match_point(img1, kp1, img1, check_of_kp1, good_of_kp1)
             if check_of_kp1:
                 count1 += 1
             if check_of_kp2:
                 count2 += 1
-            good1.append(good_of_kp1)
-            good2.append(good_of_kp2)
+            good1.append(len(good_of_kp1))
+            good2.append(len(good_of_kp2))
         half = round(len(good1) / 2)
         if count1 >= half and count2 >= half:
-            print(f"Both pictures are of the same type of logo -> GOOD")
+            print(f"Both pictures are of the SAME type of logo")
+            return True
         else:
-            print(f"Both images are different logo -> NOT GOOD")
-
-        print(len(good1[0]), len(good1[1]), '\n', check1)
-        print(len(good2[0]), len(good2[1]), '\n', check2)
+            print(f"Both images are DIFFERENT logo")
+            return False
+        print(good1, "\n", good2)
 
     def match_box(self, img1: np.ndarray, img2: np.ndarray):
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
+        # self.save_keypoint(kp1, kp2, des1, des2)
         good, check = self.compare_img(kp1, des1, kp2, des2)
         # self.visualize_match_point(img1, kp1, img2, kp2, good)
         return [check]
