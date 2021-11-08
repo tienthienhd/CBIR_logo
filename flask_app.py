@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 import os
 from sift_feature.sift_query import Query_Image
 from utils import parse_args
-from sift_feature.query import query_img, match_and_box
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
