@@ -4,7 +4,7 @@ from sift_query import QueryImage, LabelNotFoundException, LabelExistException
 from utils import parse_args, _parse_args
 from loguru import logger
 
-logger.add('logs/merch_client.log', rotation="50 MB", retention='1 week')
+logger.add('logs/CBIR_logo.log', rotation="50 MB", retention='1 week')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 url_query = None

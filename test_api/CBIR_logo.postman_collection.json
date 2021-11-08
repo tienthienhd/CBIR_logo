@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"selfie_images\": [\"https://file.tima.vn/uploads/LOS/2021/10/10.770278513534093-106.63186193678501-842dbc63-fad4-4fc2-85ed-3c3263874422.jpg\",\"https://file.tima.vn/uploads/LOS/2021/10/10.77026978504348-106.63186329738184-8cd8a6dc-ae5a-4a14-9d65-c78a7649577a.jpg\",\"https://file.tima.vn/uploads/LOS/2021/10/10.770309582382485-106.63183843297801-1e1355db-31ce-4b38-9d83-44f1c7b4e203.jpg\", \"https://file.tima.vn/uploads/LOS/2021/10/10.770294258548935-106.63187579669396-1e54f704-29b6-41ad-b9e2-d19d710a5f31.jpg\"],\n\"id_image\": \"https://file.tima.vn/uploads/LOS/2021/10/10.770261913710208-106.63186337930007-07029648-6436-4f16-a361-cdbda1b7ea1f.jpg\"\n}",
+					"raw": "{\n    \"image\": \"https://cf.shopee.vn/file/cba303220ab9a586a60e21022b27c23\",\n    \"label\": \"pepsi\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -20,19 +20,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:15004/image/face/filter",
-					"protocol": "http",
+					"raw": "{{base_url}}/check-logo",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"{{base_url}}"
 					],
-					"port": "15004",
 					"path": [
-						"image",
-						"face",
-						"filter"
+						"check-logo"
 					]
 				}
 			},
@@ -45,7 +38,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"image\": [\"https://img.vietnamfinance.vn/webp-jpg/700x0/upload/news/phanlinh/2020/2/25/vnf-pepsi%202.webp\",\n    \"https://img.vietnamfinance.vn/webp-jpg/700x0/upload/news/phanlinh/2020/2/25/vnf-pepsi%202.webp\"]\n    \"label\": \"pepsi\"\n}\n",
+					"raw": "{\n    \"image\": \"https://cf.shopee.vn/file/cba303220ab9a586a6b0e21022b27c23\",\n    \"label\": \"lala\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -53,17 +46,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/compare",
-					"protocol": "http",
+					"raw": "{{base_url}}/add-logo",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"{{base_url}}"
 					],
-					"port": "5000",
 					"path": [
-						"compare"
+						"add-logo"
 					]
 				}
 			},
@@ -76,7 +64,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"image\": \"https://cf.shopee.vn/file/cba303220ab9a586a6b0e21022b27c23\",\n    \"label\": \"pepsi\"\n}\n",
+					"raw": "{\n    \"image\": [\"https://cf.shopee.vn/file/cba303220ab9a586a6b0e21022b27c23\",\n    \"data:image/jpeg;base64,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\"],\n    \"label\": \"pepsi\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
