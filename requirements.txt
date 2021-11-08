@@ -1,4 +1,12 @@
-opencv-python
-matplotlib
+opencv-python==4.5.4.58
+matplotlib==3.4.3
 scikit_learn
-Pillow
+Pillow==8.4.0
+flask_restful
+requests==2.26.0
+Flask==1.0.2
+numpy==1.21.4
+Werkzeug==0.15.5
+urllib3==1.26.7
+scikit-learn==1.0.1
+loguru==0.5.3

@@ -1,11 +1,11 @@
 import json
-import os.path
+from typing import List, Tuple, Dict
 
 import cv2
-import numpy as np
-from sklearn.cluster import KMeans, DBSCAN
 import matplotlib.pyplot as plt
-from typing import List, Tuple, Dict
+import numpy as np
+from loguru import logger
+from sklearn.cluster import DBSCAN
 
 
 class QueryImage:
@@ -109,6 +109,8 @@ class QueryImage:
             deses.append(des)
         return keypoints, deses
 
+
+
     def compare_img(self, kp1, des1, kp2, des2):
         good = self.matching(kp1, kp2, des1, des2)
         check = True
@@ -134,17 +136,16 @@ class QueryImage:
         return img2, matchesMask
 
     def add_logo2json(self, imgs):
-        with open(self.data_path) as json_file:
-            data = json.load(json_file)
+        #FIXME: test
         info: list = data["pepsi"]["imgs"]
         if not isinstance(imgs, list):
             imgs = [imgs]
         for img in imgs:
             kp, des = self.get_keypoint(img)
             info.append(self.take_kp_des(kp, des))
-        # with open(self.data_path, 'w') as fp:
-        #     fp.write(json.dumps(data))
-        print("You added a logo success to file json")
+        with open(self.data_path, 'w') as fp:
+            fp.write(json.dumps(data))
+        logger.info("You added a logo success to file json")
 
     def visualize_match_point(self, img1, kp1, img2, kp2, good):
         img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
@@ -169,10 +170,10 @@ class QueryImage:
             goods.append(len(good))
         half = round(len(goods) / 2)
         if count >= half:
-            print(f"Image have logo, CORRECT: {count}/{len(goods)}")
+            logger.info(f"Image have logo, CORRECT: {count}/{len(goods)}")
             return True
         else:
-            print(f"Image not have logo, CORRECT:  {count}/{len(goods)}")
+            logger.info(f"Image not have logo, CORRECT:  {count}/{len(goods)}")
             return False
 
     def check_two_img(self, img1, img2):
@@ -193,8 +194,8 @@ class QueryImage:
             good2.append(len(good_of_kp2))
         half = round(len(good1) / 2)
         if count1 >= half and count2 >= half:
-            print(f"Both pictures are of the SAME type of logo")
+            logger.info(f"Both pictures are of the SAME type of logo")
             return True
         else:
-            print(f"Both images are DIFFERENT logo")
+            logger.info(f"Both images are DIFFERENT logo")
             return False

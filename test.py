@@ -1,8 +1,10 @@
 import glob
 import os.path
 import time
+
 import cv2
-from sift_feature.sift_query import Query_Image
+
+from sift_query import QueryImage
 
 
 def read_img(img):
@@ -34,6 +36,7 @@ def compare_img_logo(path1, path2):
         print("-" * 50)
         print(f"Image is True: {count}|{total_img}, Totqal time: {_time}, Average time each image:{_time / total_img}")
 
+
 def compare_two_img(path1, path2):
     if os.path.exists(path1) and os.path.exists(path2):
         img1 = read_img(path1)
@@ -41,6 +44,7 @@ def compare_two_img(path1, path2):
     else:
         raise print("Either path does not exist")
     CompareImg.check_two_img(img1, img2)
+
 
 def add2json(path_logo1, path_logo2):
     path_file_json = "./data/file_keypoint.json"
@@ -51,7 +55,7 @@ def add2json(path_logo1, path_logo2):
 
 if __name__ == "__main__":
     st = time.time()
-    CompareImg = Query_Image()
+    CompareImg = QueryImage()
     path = "/home/huyphuong99/Desktop/material/test/pepsicoca"
     path_img1 = f"{path}/pepsi02.jpg"
     path_img2 = f"{path}/pepsi8.jpg"
@@ -65,4 +69,3 @@ if __name__ == "__main__":
     # path_logo1 = f"{path}/pepsilogo21.jpeg"
     # path_logo2 = f"{path}/pepsilogo18.jpg"
     # add2json(path_logo1, path_logo2)
-
