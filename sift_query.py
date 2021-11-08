@@ -1,4 +1,5 @@
 import json
+import os
 from typing import List, Tuple, Dict
 
 import cv2
@@ -15,12 +16,15 @@ class LabelNotFoundException(Exception):
 
 class QueryImage:
     def __init__(self):
-        self.sift = cv2.xfeatures2d.SIFT_create()
+        self.sift = cv2.SIFT_create()
         self.threshold = 15
         self.rate = .7
-        self.data_path = './data/file_keypoint.json'
-        with open(self.data_path) as json_file:
-            self.data = json.load(json_file)
+        self.data_path = './file_keypoint.json'
+        if os.path.exists(self.data_path):
+            with open(self.data_path) as json_file:
+                self.data = json.load(json_file)
+        else:
+            self.data = {}
 
     def read_img(self, img):
         return cv2.imread(img, cv2.IMREAD_GRAYSCALE)
@@ -154,8 +158,8 @@ class QueryImage:
         for img in imgs:
             kp, des = self.get_keypoint(img)
             info.append(self.take_kp_des(kp, des))
-        # with open(self.data_path, 'w') as fp:
-        #     fp.write(json.dumps(self.data))
+        with open(self.data_path, 'w') as fp:
+            fp.write(json.dumps(self.data))
         logger.info(f"You added a logo {label} success to file json")
         return True
 

@@ -56,8 +56,8 @@ def check_logo():
     }
     try:
         if request.method == "POST":
-            if img is None:
-                response["status_code"] = 400,
+            if img is None or img[0] is None:
+                response["status_code"] = 400
                 response["message"] = "Input images is wrong format"
                 return jsonify(response)
 
