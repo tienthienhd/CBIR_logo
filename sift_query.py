@@ -13,7 +13,8 @@ class QueryImage:
         self.sift = cv2.xfeatures2d.SIFT_create()
         self.threshold = 15
         self.rate = .7
-        self.data_path = 'data.json'
+        self.data_path = './data/file_keypoint.json'
+        self.list_kp, self.list_des = self.load_file_keypoint(self.data_path)
 
     def read_img(self, img):
         return cv2.imread(img, cv2.IMREAD_GRAYSCALE)
@@ -31,9 +32,7 @@ class QueryImage:
 
         x = []
         for m, n in matches:
-            # print(m)
             x.append(kp2[m.trainIdx].pt)
-        # kp_filted = KMeans().fit_predict(x)
         kp_filted = DBSCAN(eps=5, min_samples=2).fit_predict(x)
         matches_2 = []
         for i, value in enumerate(kp_filted):
@@ -77,10 +76,10 @@ class QueryImage:
             result[type_img]["imgs"].append(self.take_kp_des(kp[i], des[i]))
         return result
 
-    def save_keypoint(self, kp1, kp2, des1, des2, path_out: str = "./data"):
+    def save_keypoint(self, kp1, kp2, des1, des2):
         r = self.create_file_keypoint([kp1, kp2], [des1, des2])
         test = json.dumps(r)
-        with open(os.path.join(path_out, "file_keypoint.json"), "w") as f:
+        with open(self.data_path, "w") as f:
             f.write(test)
 
     def take_inf_kp(self, kp):
@@ -134,10 +133,8 @@ class QueryImage:
             # img2 = cv2.polylines(img2, [np.int32(dst)], True, (50, 50, 50), 3, cv2.LINE_AA)
         return img2, matchesMask
 
-    def add_logo2json(self, imgs, file_json = None):
-        if file_json is None:
-            file_json = "./data/file_keypoint.json"
-        with open(file_json) as json_file:
+    def add_logo2json(self, imgs):
+        with open(self.data_path) as json_file:
             data = json.load(json_file)
         info: list = data["pepsi"]["imgs"]
         if not isinstance(imgs, list):
@@ -145,7 +142,7 @@ class QueryImage:
         for img in imgs:
             kp, des = self.get_keypoint(img)
             info.append(self.take_kp_des(kp, des))
-        # with open(file_json, 'w') as fp:
+        # with open(self.data_path, 'w') as fp:
         #     fp.write(json.dumps(data))
         print("You added a logo success to file json")
 
@@ -159,16 +156,14 @@ class QueryImage:
         plt.imshow(img3)
         plt.title(f"Image: | Good: {len(good)}")
         plt.show()
-        plt.savefig('static/imgs/matched_kp_filted.jpg')
+        # plt.savefig('static/imgs/matched_kp_filted.jpg')
 
     def check_img_have_logo(self, img):
-        path_json = "./data/file_keypoint.json"
-        list_kp, list_des = self.load_file_keypoint(path_json)
         kp, des = self.get_keypoint(img)
         goods, checks = [], []
         count = 0
-        for i in range(len(list_kp)):
-            good, check = self.compare_img(kp, des, list_kp[i], list_des[i])
+        for i in range(len(self.list_kp)):
+            good, check = self.compare_img(kp, des, self.list_kp[i], self.list_des[i])
             if check:
                 count += 1
             goods.append(len(good))
@@ -181,16 +176,14 @@ class QueryImage:
             return False
 
     def check_two_img(self, img1, img2):
-        path_json = "./data/file_keypoint.json"
-        list_kp, list_des = self.load_file_keypoint(path_json)
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         good1, check1 = [], []
         good2, check2 = [], []
         count1, count2 = 0, 0
-        for i in range(len(list_kp)):
-            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, list_kp[i], list_des[i])
-            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, list_kp[i], list_des[i])
+        for i in range(len(self.list_kp)):
+            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, self.list_kp[i], self.list_des[i])
+            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, self.list_kp[i], self.list_des[i])
             # self.visualize_match_point(img1, kp1, img1, check_of_kp1, good_of_kp1)
             if check_of_kp1:
                 count1 += 1
@@ -205,4 +198,3 @@ class QueryImage:
         else:
             print(f"Both images are DIFFERENT logo")
             return False
-        print(good1, "\n", good2)
