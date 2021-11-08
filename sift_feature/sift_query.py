@@ -13,11 +13,11 @@ class Query_Image:
         self.threshold = 15
         self.rate = .7
 
-    def query_img(self, link: str, data: dict):
-        pass
-
     def read_img(self, img):
         return cv2.imread(img, cv2.IMREAD_GRAYSCALE)
+
+    def convert2gray(self, img):
+        return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     def matching(self, kp1, kp2, des1, des2):
         FLANN_INDEX_KDTREE = 0
@@ -131,7 +131,7 @@ class Query_Image:
             # img2 = cv2.polylines(img2, [np.int32(dst)], True, (50, 50, 50), 3, cv2.LINE_AA)
         return img2, matchesMask
 
-    def add_logo2json(self, file_json, imgs):
+    def add_logo2json(self, imgs, file_json = None):
         if file_json is None:
             file_json = "./data/file_keypoint.json"
         with open(file_json) as json_file:
@@ -142,10 +142,9 @@ class Query_Image:
         for img in imgs:
             kp, des = self.get_keypoint(img)
             info.append(self.take_kp_des(kp, des))
-        with open(file_json, 'w') as fp:
-            fp.write(json.dumps(data))
+        # with open(file_json, 'w') as fp:
+        #     fp.write(json.dumps(data))
         print("You added a logo success to file json")
-        return {"result:", "You added a logo success to file json"}
 
     def visualize_match_point(self, img1, kp1, img2, kp2, good):
         img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)

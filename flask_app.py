@@ -14,26 +14,6 @@ url_img_results = []
 app = Flask(__name__)
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
-@app.route('/query', methods=['GET', 'POST'])
-def query():
-    if request.method == "POST":
-        if url_query is None:
-            return jsonify_str({'error': 'Please upload or add link image.'})
-        Q = Query_Image()
-        path_img_train = "/home/huyphuong99/Desktop/material/test/pepsicoca/pepsilogo18.jpg"
-        img_train = cv2.imread(path_img_train, cv2.COLOR_BGR2GRAY)
-        img_query = cv2.imread(url_query, cv2.COLOR_BGR2GRAY)
-        results = Q.match_box(img_query, img_train)
-        print('Finished query\n----------------')
-        print(results)
-        return jsonify_str({"results": results})
-
-
 @app.route("/addlogo2json", methods=["GET", "POST"])
 def add_logo2json():
     image, filename = parse_args()
@@ -42,8 +22,15 @@ def add_logo2json():
         if logo is None:
             return jsonify_str({"error", "Please upload logo as input"})
         Q = Query_Image()
-        result = Q.add_logo2json(logo)
-        return jsonify_str(result)
+        check = False
+        try:
+            logo = Q.convert2gray(logo)
+            Q.add_logo2json(logo)
+            check = True
+        except Exception as e:
+            raise "Process add logo error!!!"
+        if check:
+            return jsonify_str({"Result": "You added a logo success to file json"})
 
 
 @app.route("/checklogo", methods=["GET", "POST"])
@@ -54,7 +41,8 @@ def check_logo():
             if img is None:
                 return jsonify_str({"error": "Please upload photos as input"})
             Q = Query_Image()
-            result = Q.check_img_have_logo(img[0])
+            img = Q.convert2gray(img[0])
+            result = Q.check_img_have_logo(img)
             if result:
                 return jsonify_str({"result": "Image have pepsi logo"})
             else:
@@ -65,14 +53,15 @@ def check_logo():
 
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
+    Q = Query_Image()
     img, filenames = parse_args()
     img1, img2 = None, None
     if len(img) == 2:
-        img1, img2 = img[0], img[1]
+        img1, img2 = Q.convert2gray(img[0]), Q.convert2gray(img[1])
+
     if request.method == "POST":
         if img1 is None or img2 is None:
             return jsonify_str({"error": "Please chooses or upload two photos as input"})
-        Q = Query_Image()
         result = Q.check_two_img(img1, img2)
         if result:
             return jsonify_str({"results": "Both pictures are of the SAME logo of PEPSI"})
@@ -80,35 +69,35 @@ def compare():
             return jsonify_str({"results": "Both images are DIFFERENT logo"})
 
 
-@app.route('/match')
-def match():
-    img_path = request.args['img_path']
-    img_path = 'static/' + img_path
-
-    if os.path.exists('static/imgs/matched_kp.png'):
-        os.remove('static/imgs/matched_kp.png')
-    if os.path.exists('static/imgs/matched_kp_filtered.png'):
-        os.remove('static/imgs/matched_kp_filtered.png')
-
-    match_and_box(img_path_1=url_query, img_path_2=img_path)
-
-    return render_template('results.html', non_filter='imgs/matched_kp.png', filtered='imgs/matched_kp_filted.png')
-
-from flask import make_response
-from functools import wraps, update_wrapper
-from datetime import datetime
-
-def nocache(view):
-    @wraps(view)
-    def no_cache(*args, **kwargs):
-        response = make_response(view(*args, **kwargs))
-        response.headers['Last-Modified'] = datetime.now()
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '-1'
-        return response
-
-    return update_wrapper(no_cache, view)
+# @app.route('/match')
+# def match():
+#     img_path = request.args['img_path']
+#     img_path = 'static/' + img_path
+#
+#     if os.path.exists('static/imgs/matched_kp.png'):
+#         os.remove('static/imgs/matched_kp.png')
+#     if os.path.exists('static/imgs/matched_kp_filtered.png'):
+#         os.remove('static/imgs/matched_kp_filtered.png')
+#
+#     match_and_box(img_path_1=url_query, img_path_2=img_path)
+#
+#     return render_template('results.html', non_filter='imgs/matched_kp.png', filtered='imgs/matched_kp_filted.png')
+#
+# from flask import make_response
+# from functools import wraps, update_wrapper
+# from datetime import datetime
+#
+# def nocache(view):
+#     @wraps(view)
+#     def no_cache(*args, **kwargs):
+#         response = make_response(view(*args, **kwargs))
+#         response.headers['Last-Modified'] = datetime.now()
+#         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+#         response.headers['Pragma'] = 'no-cache'
+#         response.headers['Expires'] = '-1'
+#         return response
+#
+#     return update_wrapper(no_cache, view)
 
 
 @app.route('/show_result/<img>')
@@ -122,7 +111,6 @@ def jsonify_str(output_list):
     with app.app_context():
         with app.test_request_context():
             result = jsonify(output_list)
-
     return result
 
 
