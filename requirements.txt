@@ -1,3 +1,9 @@
+opencv-python==4.5.4.58
+matplotlib==3.4.3
+scikit_learn
+Pillow==8.3.1
+flask_restful
+requests==2.25.1
 Flask==1.1.4
 numpy==1.19.5
 Werkzeug==0.15.5

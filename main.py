@@ -20,7 +20,7 @@ def add_logo2json():
     response = {
         "status_code": None,
         "message": None,
-        "result": None
+        "add_logo": None
     }
     try:
         if request.method == "POST":
@@ -33,11 +33,10 @@ def add_logo2json():
 
             response["status_code"] = 200
             response["message"] = "success"
-            response["result"] = {}
             if check:
-                response["result"]["add_logo"] = True
+                response["add_logo"] = True
             else:
-                response["result"]["add_logo"] = False
+                response["add_logo"] = False
     except Exception as e:
         logger.exception(e)
         response["status_code"] = 500
@@ -52,7 +51,7 @@ def check_logo():
     response = {
         "status_code": None,
         "message": None,
-        "result": None
+        "has_logo": None
     }
     try:
         if request.method == "POST":
@@ -65,11 +64,10 @@ def check_logo():
             result = query_image.check_img_have_logo(img, label)
             response["status_code"] = 200
             response["message"] = "success"
-            response["result"] = {}
             if result:
-                response["result"]["has_logo"] = True
+                response["has_logo"] = True
             else:
-                response["result"]["has_logo"] = False
+                response["has_logo"] = False
     except LabelNotFoundException as e:
         logger.error(e)
         response["status_code"] = 400
@@ -88,16 +86,10 @@ def compare():
     response = {
         "status_code": None,
         "message": None,
-        "result": None
+        "same": None
     }
     if len(img) == 2:
-        try:
-            img1, img2 = query_image.convert2gray(img[0]), query_image.convert2gray(img[1])
-        except Exception as e:
-            logger.error(e)
-            response["status_code"] = 400,
-            response["message"] = "Input images is wrong format"
-            return jsonify(response)
+        img1, img2 = query_image.convert2gray(img[0]), query_image.convert2gray(img[1])
     try:
         if request.method == "POST":
             if img1 is None or img2 is None:
@@ -107,11 +99,10 @@ def compare():
             result = query_image.check_two_img(img1, img2, label)
             response["status_code"] = 200
             response["message"] = "success"
-            response["result"] = {}
             if result:
-                response["result"]["same"] = True
+                response["same"] = True
             else:
-                response["result"]["same"] = False
+                response["same"] = False
 
     except LabelNotFoundException as e:
         logger.error(e)

@@ -92,7 +92,8 @@ class QueryImage:
         with open(self.data_path, "w") as f:
             f.write(test)
 
-    def take_inf_kp(self, kp):
+    @staticmethod
+    def take_inf_kp(kp):
         keypoint = []
         for sub_kp in kp:
             x = sub_kp["x"]
@@ -128,22 +129,6 @@ class QueryImage:
             check = False
         return good, check
 
-    def detect_keypoint(self, img1, img2, kp1, kp2, good):
-        matchesMask = None
-        if len(good) > self.threshold:
-            src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
-            dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
-            M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-            matchesMask = mask.ravel().tolist()
-            h, w = img1.shape[:2]
-            pts = np.float32([[0, 0],
-                              [0, h - 1],
-                              [w - 1, h - 1],
-                              [w - 1, 0]]
-                             ).reshape(-1, 1, 2)
-            dst = cv2.perspectiveTransform(pts, M)
-            # img2 = cv2.polylines(img2, [np.int32(dst)], True, (50, 50, 50), 3, cv2.LINE_AA)
-        return img2, matchesMask
 
     def add_logo2json(self, imgs, label: str):
         if not isinstance(imgs, list):
@@ -167,6 +152,7 @@ class QueryImage:
 
         info_json = self.load_file_keypoint(label)
         kp, des = self.get_keypoint(img)
+        # self.visualize_match_point(img, kp)
         goods, checks = [], []
         count = 0
         for i in range(len(info_json["keypoints"])):
@@ -209,14 +195,9 @@ class QueryImage:
             logger.info(f"Both images are DIFFERENT logo")
             return False
 
-    def visualize_match_point(self, img1, kp1, img2, kp2, good):
-        img2, matchesMask = self.detect_keypoint(img1, img2, kp1, kp2, good)
-        draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
-                           singlePointColor=None,
-                           matchesMask=matchesMask,  # draw only inliers
-                           flags=2)
-        img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
-        plt.imshow(img3)
-        plt.title(f"Image: | Good: {len(good)}")
+    @staticmethod
+    def visualize_keypoint(img, kp):
+        result = cv2.drawKeypoints(img, kp, 0, (0, 255, 0), flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        plt.imshow(result)
+        plt.title(f"Image: | Good: {len(kp)}")
         plt.show()
-        # plt.savefig('static/imgs/matched_kp_filted.jpg')

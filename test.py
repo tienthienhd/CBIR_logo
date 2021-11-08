@@ -47,7 +47,7 @@ def compare_two_img(path1, path2):
 
 
 def add2json(path_logo1, path_logo2):
-    path_file_json = "./data/file_keypoint.json"
+    path_file_json = "file_keypoint.json"
     logo1 = read_img(path_logo1)
     logo2 = read_img(path_logo2)
     CompareImg.add_logo2json([logo1, logo2], "coca")
