@@ -12,9 +12,6 @@ class LabelNotFoundException(Exception):
     """raise if label not found in data"""
     pass
 
-class LabelExistException(Exception):
-    """raise if label exist in data"""
-    pass
 
 class QueryImage:
     def __init__(self):
