@@ -1,9 +1,7 @@
-import werkzeug
 from flask import Flask, request, jsonify
-from flask_restful import reqparse
 
-from sift_query import QueryImage
-from utils import parse_args, parse_request, _parse_args
+from sift_query import QueryImage, LabelNotFoundException, LabelExistException
+from utils import parse_args, _parse_args
 from loguru import logger
 
 logger.add('logs/merch_client.log', rotation="50 MB", retention='1 week')
@@ -22,29 +20,30 @@ def add_logo2json():
     response = {
         "status_code": None,
         "message": None,
-        "result": {}
+        "result": None
     }
-    if request.method == "POST":
-        if logo is None or label is None:
-            response["status_code"] = 400,
-            response["message"] = "Input images is wrong format"
-            return jsonify(response)
-        try:
+    try:
+        if request.method == "POST":
+            if logo is None or label is None:
+                response["status_code"] = 400,
+                response["message"] = "Input images is wrong format"
+
             logo = [query_image.convert2gray(lg) for lg in logo]
             check = query_image.add_logo2json(logo, label)
-        except:
-            response["status_code"] = 500
-            response["message"] = "Internal server error"
-            return jsonify(response)
 
-        response["status_code"] = 200
-        response["message"] = "success"
-        if check:
-            response["result"]["add_logo"] = True
-            return jsonify(response)
-        else:
-            response["result"]["add_logo"] = False
-            return jsonify(response)
+            response["status_code"] = 200
+            response["message"] = "success"
+            response["result"] = {}
+            if check:
+                response["result"]["add_logo"] = True
+            else:
+                response["result"]["add_logo"] = False
+    except Exception as e:
+        logger.exception(e)
+        response["status_code"] = 500
+        response["message"] = "Internal server error"
+
+    return jsonify(response)
 
 
 @app.route("/check-logo", methods=["GET", "POST"])
@@ -53,7 +52,7 @@ def check_logo():
     response = {
         "status_code": None,
         "message": None,
-        "result": {}
+        "result": None
     }
     try:
         if request.method == "POST":
@@ -66,49 +65,63 @@ def check_logo():
             result = query_image.check_img_have_logo(img, label)
             response["status_code"] = 200
             response["message"] = "success"
+            response["result"] = {}
             if result:
                 response["result"]["has_logo"] = True
-                return jsonify(response)
             else:
                 response["result"]["has_logo"] = False
-                return jsonify(response)
-    except:
+    except LabelNotFoundException as e:
+        logger.error(e)
+        response["status_code"] = 400
+        response["message"] = "Label not found in data"
+    except Exception as e:
+        logger.exception(e)
         response["status_code"] = 500
         response["message"] = "Internal server error"
-        return jsonify(response)
+    return jsonify(response)
+
 
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
-    img, label = _parse_args()
+    img, label = parse_args()
     img1, img2 = None, None
     response = {
         "status_code": None,
         "message": None,
-        "result": {}
+        "result": None
     }
     if len(img) == 2:
         try:
             img1, img2 = query_image.convert2gray(img[0]), query_image.convert2gray(img[1])
-        except:
+        except Exception as e:
+            logger.error(e)
             response["status_code"] = 400,
             response["message"] = "Input images is wrong format"
             return jsonify(response)
+    try:
+        if request.method == "POST":
+            if img1 is None or img2 is None:
+                response["status_code"] = 400,
+                response["message"] = "Input images is wrong format"
+                return jsonify(response)
+            result = query_image.check_two_img(img1, img2, label)
+            response["status_code"] = 200
+            response["message"] = "success"
+            response["result"] = {}
+            if result:
+                response["result"]["same"] = True
+            else:
+                response["result"]["same"] = False
 
-    if request.method == "POST":
-        if img1 is None or img2 is None:
-            response["status_code"] = 400,
-            response["message"] = "Input images is wrong format"
-            return jsonify(response)
-        result = query_image.check_two_img(img1, img2, label)
-        response["status_code"] = 200
-        response["message"] = "success"
-        if result:
-            response["result"]["same"] = True
-            return jsonify(response)
-        else:
-            response["result"]["same"] = False
-            return jsonify(response)
-
+    except LabelNotFoundException as e:
+        logger.error(e)
+        response["status_code"] = 400
+        response["message"] = "Label not found in data"
+    except Exception as e:
+        logger.exception(e)
+        response["status_code"] = 500
+        response["message"] = "Internal server error"
+    return jsonify(response)
 
 
 if __name__ == "__main__":

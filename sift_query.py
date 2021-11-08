@@ -8,6 +8,14 @@ from loguru import logger
 from sklearn.cluster import DBSCAN
 
 
+class LabelNotFoundException(Exception):
+    """raise if label not found in data"""
+    pass
+
+class LabelExistException(Exception):
+    """raise if label exist in data"""
+    pass
+
 class QueryImage:
     def __init__(self):
         self.sift = cv2.xfeatures2d.SIFT_create()
@@ -96,6 +104,8 @@ class QueryImage:
         return keypoint
 
     def load_file_keypoint(self, label: str):
+        if label not in self.data:
+            raise LabelNotFoundException(f"Not found label: {label}")
         info = self.data[label]["imgs"]
         keypoints = []
         deses = []
@@ -141,23 +151,25 @@ class QueryImage:
         if label not in self.data:
             self.data[label] = {}
             self.data[label]["imgs"] = []
+
         info: list = self.data[label]["imgs"]
 
         for img in imgs:
             kp, des = self.get_keypoint(img)
             info.append(self.take_kp_des(kp, des))
-        with open(self.data_path, 'w') as fp:
-            fp.write(json.dumps(self.data))
+        # with open(self.data_path, 'w') as fp:
+        #     fp.write(json.dumps(self.data))
         logger.info(f"You added a logo {label} success to file json")
         return True
 
     def check_img_have_logo(self, img, label):
-        self.info_json = self.load_file_keypoint(label)
+
+        info_json = self.load_file_keypoint(label)
         kp, des = self.get_keypoint(img)
         goods, checks = [], []
         count = 0
-        for i in range(len(self.info_json["keypoints"])):
-            good, check = self.compare_img(kp, des, self.info_json["keypoints"][i], self.info_json["deses"][i])
+        for i in range(len(info_json["keypoints"])):
+            good, check = self.compare_img(kp, des, info_json["keypoints"][i], info_json["deses"][i])
             if check:
                 count += 1
             goods.append(len(good))
@@ -170,17 +182,17 @@ class QueryImage:
             return False
 
     def check_two_img(self, img1, img2, label):
-        self.info_json = self.load_file_keypoint(label)
+        info_json = self.load_file_keypoint(label)
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         good1, check1 = [], []
         good2, check2 = [], []
         count1, count2 = 0, 0
-        for i in range(len(self.info_json["keypoints"])):
-            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, self.info_json["keypoints"][i],
-                                                         self.info_json["deses"][i])
-            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, self.info_json["keypoints"][i],
-                                                         self.info_json["deses"][i])
+        for i in range(len(info_json["keypoints"])):
+            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, info_json["keypoints"][i],
+                                                         info_json["deses"][i])
+            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, info_json["keypoints"][i],
+                                                         info_json["deses"][i])
             # self.visualize_match_point(img1, kp1, img1, check_of_kp1, good_of_kp1)
             if check_of_kp1:
                 count1 += 1

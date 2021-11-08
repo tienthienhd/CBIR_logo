@@ -1,0 +1,99 @@
+{
+	"info": {
+		"_postman_id": "5c715b5d-3cc7-438d-aefb-7a6f69d6e095",
+		"name": "CBIR_logo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "check_logo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"selfie_images\": [\"https://file.tima.vn/uploads/LOS/2021/10/10.770278513534093-106.63186193678501-842dbc63-fad4-4fc2-85ed-3c3263874422.jpg\",\"https://file.tima.vn/uploads/LOS/2021/10/10.77026978504348-106.63186329738184-8cd8a6dc-ae5a-4a14-9d65-c78a7649577a.jpg\",\"https://file.tima.vn/uploads/LOS/2021/10/10.770309582382485-106.63183843297801-1e1355db-31ce-4b38-9d83-44f1c7b4e203.jpg\", \"https://file.tima.vn/uploads/LOS/2021/10/10.770294258548935-106.63187579669396-1e54f704-29b6-41ad-b9e2-d19d710a5f31.jpg\"],\n\"id_image\": \"https://file.tima.vn/uploads/LOS/2021/10/10.770261913710208-106.63186337930007-07029648-6436-4f16-a361-cdbda1b7ea1f.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:15004/image/face/filter",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "15004",
+					"path": [
+						"image",
+						"face",
+						"filter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_logo_to_file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"image\": [\"https://img.vietnamfinance.vn/webp-jpg/700x0/upload/news/phanlinh/2020/2/25/vnf-pepsi%202.webp\",\n    \"https://img.vietnamfinance.vn/webp-jpg/700x0/upload/news/phanlinh/2020/2/25/vnf-pepsi%202.webp\"]\n    \"label\": \"pepsi\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/compare",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"compare"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "compare_img",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"image\": \"https://cf.shopee.vn/file/cba303220ab9a586a6b0e21022b27c23\",\n    \"label\": \"pepsi\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/check-logo",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"check-logo"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
