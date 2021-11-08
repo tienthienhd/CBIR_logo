@@ -50,7 +50,7 @@ def add2json(path_logo1, path_logo2):
     path_file_json = "./data/file_keypoint.json"
     logo1 = read_img(path_logo1)
     logo2 = read_img(path_logo2)
-    CompareImg.add_logo2json(path_file_json, logo1)
+    CompareImg.add_logo2json([logo1, logo2], "coca")
 
 
 if __name__ == "__main__":
@@ -66,6 +66,6 @@ if __name__ == "__main__":
     # compare_img_logo(logo2, logo2)
     # img = cv2.imread(path_img1, cv2.COLOR_BGR2GRAY)
     # CompareImg.check_img_have_logo(img)
-    # path_logo1 = f"{path}/pepsilogo21.jpeg"
-    # path_logo2 = f"{path}/pepsilogo18.jpg"
-    # add2json(path_logo1, path_logo2)
+    path_logo1 = f"{path}/pepsilogo21.jpeg"
+    path_logo2 = f"{path}/pepsilogo18.jpg"
+    add2json(path_logo1, path_logo2)

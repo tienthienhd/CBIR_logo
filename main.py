@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_restful import reqparse
 
 from sift_query import QueryImage
-from utils import parse_args, parse_request
+from utils import parse_args, parse_request, _parse_args
 from loguru import logger
 
 logger.add('logs/merch_client.log', rotation="50 MB", retention='1 week')
@@ -18,56 +18,38 @@ query_image = QueryImage()
 
 @app.route("/add-logo", methods=["GET", "POST"])
 def add_logo2json():
-    image, filename = parse_args()
-
-    parser = reqparse.RequestParser()
-    parser.add_argument('image', required=True, location=['form', 'args', 'files', 'json'], action='append')
-    parser.add_argument('label', required=True, location=['form', 'args', 'files', 'json'])
-    args_ = parser.parse_args(strict=True)
-    if len(args_['image']) > 0 and "FileStorage" in args_['image'][0]:
-        parser.replace_argument('image', type=werkzeug.datastructures.FileStorage, required=True, location='files',
-                                action='append')
-    args_ = parser.parse_args(strict=True)
-
-    images = args_['image']
-    imgs, filenames = parse_request(images)
-    label = args_['label']
-
-    logo = image[0]
+    logo, label = _parse_args()
     response = {
         "status_code": None,
         "message": None,
         "result": {}
     }
     if request.method == "POST":
-
-        if logo is None:
+        if logo is None or label is None:
             response["status_code"] = 400,
             response["message"] = "Input images is wrong format"
             return jsonify(response)
-
         try:
-            logo = query_image.convert2gray(logo)
-            check = query_image.add_logo2json(logo)
-        except Exception as e:
-            logger.error(e)
+            logo = [query_image.convert2gray(lg) for lg in logo]
+            check = query_image.add_logo2json(logo, label)
+        except:
             response["status_code"] = 500
             response["message"] = "Internal server error"
-            return response
+            return jsonify(response)
 
         response["status_code"] = 200
         response["message"] = "success"
         if check:
             response["result"]["add_logo"] = True
-
+            return jsonify(response)
         else:
             response["result"]["add_logo"] = False
-        return jsonify(response)
+            return jsonify(response)
 
 
 @app.route("/check-logo", methods=["GET", "POST"])
 def check_logo():
-    img, filenames = parse_args()
+    img, label = _parse_args()
     response = {
         "status_code": None,
         "message": None,
@@ -81,7 +63,7 @@ def check_logo():
                 return jsonify(response)
 
             img = query_image.convert2gray(img[0])
-            result = query_image.check_img_have_logo(img)
+            result = query_image.check_img_have_logo(img, label)
             response["status_code"] = 200
             response["message"] = "success"
             if result:
@@ -90,16 +72,14 @@ def check_logo():
             else:
                 response["result"]["has_logo"] = False
                 return jsonify(response)
-    except Exception as e:
-        logger.error(e)
+    except:
         response["status_code"] = 500
         response["message"] = "Internal server error"
-        raise response from e
-
+        return jsonify(response)
 
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
-    img, filenames = parse_args()
+    img, label = _parse_args()
     img1, img2 = None, None
     response = {
         "status_code": None,
@@ -109,8 +89,7 @@ def compare():
     if len(img) == 2:
         try:
             img1, img2 = query_image.convert2gray(img[0]), query_image.convert2gray(img[1])
-        except Exception as e:
-            logger.error(e)
+        except:
             response["status_code"] = 400,
             response["message"] = "Input images is wrong format"
             return jsonify(response)
@@ -120,7 +99,7 @@ def compare():
             response["status_code"] = 400,
             response["message"] = "Input images is wrong format"
             return jsonify(response)
-        result = query_image.check_two_img(img1, img2)
+        result = query_image.check_two_img(img1, img2, label)
         response["status_code"] = 200
         response["message"] = "success"
         if result:
@@ -129,6 +108,7 @@ def compare():
         else:
             response["result"]["same"] = False
             return jsonify(response)
+
 
 
 if __name__ == "__main__":

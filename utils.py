@@ -115,3 +115,19 @@ def parse_args(*args):
     images = args_['image']
     imgs, filenames = parse_request(images)
     return imgs, filenames
+
+
+def _parse_args():
+    parser = reqparse.RequestParser()
+    parser.add_argument("image", required=True, location=["form", "args", "files", "json"], action="append")
+    parser.add_argument("label", required=True, location=["form", "args", "files", "json"])
+    args_ = parser.parse_args(strict=True)
+    if len(args_['image']) > 0 and "FileStorage" in args_['image'][0]:
+        parser.replace_argument('image', type=werkzeug.datastructures.FileStorage, required=True, location='files',
+                                action='append')
+    args_ = parser.parse_args(strict=True)
+
+    images = args_['image']
+    label = args_["label"]
+    imgs, filenames = parse_request(images)
+    return imgs, label
