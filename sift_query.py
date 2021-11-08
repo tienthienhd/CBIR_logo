@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple, Dict
 
 
-class Query_Image:
+class QueryImage:
     def __init__(self):
         self.sift = cv2.xfeatures2d.SIFT_create()
         self.threshold = 15
