@@ -1,4 +1,5 @@
 .idea
-data_btl/
-data/file_keypoint.json
-static/imgs
+file_keypoint.json
+*.jpg
+*.png
+*.jpeg

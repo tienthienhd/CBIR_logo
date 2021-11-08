@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from sklearn.cluster import KMeans, DBSCAN
 import matplotlib.pyplot as plt
+from typing import List, Tuple, Dict
 
 
 class Query_Image:
@@ -12,6 +13,7 @@ class Query_Image:
         self.sift = cv2.xfeatures2d.SIFT_create()
         self.threshold = 15
         self.rate = .7
+        self.data_path = 'data.json'
 
     def read_img(self, img):
         return cv2.imread(img, cv2.IMREAD_GRAYSCALE)
@@ -47,7 +49,8 @@ class Query_Image:
     def get_keypoint(self, img):
         return self.sift.detectAndCompute(img, None)
 
-    def take_kp(self, kp_i) -> dict:
+    @staticmethod
+    def take_kp(kp_i) -> Dict:
         dict_kp = {}
         x, y = kp_i.pt
         dict_kp["x"] = x
@@ -58,7 +61,7 @@ class Query_Image:
         dict_kp["octave"] = kp_i.octave
         return dict_kp
 
-    def take_kp_des(self, kp: tuple, des: np.ndarray) -> dict:
+    def take_kp_des(self, kp: Tuple, des: np.ndarray) -> Dict:
         result_dict = {}
         result_dict["kp"] = []
         for element in kp:
@@ -66,7 +69,7 @@ class Query_Image:
         result_dict["des"] = des.tolist()
         return result_dict
 
-    def create_file_keypoint(self, kp: list, des: list[np.ndarray], type_img: str = "pepsi") -> dict:
+    def create_file_keypoint(self, kp: List, des: List[np.ndarray], type_img: str = "pepsi") -> Dict:
         result = {}
         result[type_img] = {}
         result[type_img]["imgs"] = []
@@ -203,11 +206,3 @@ class Query_Image:
             print(f"Both images are DIFFERENT logo")
             return False
         print(good1, "\n", good2)
-
-    def match_box(self, img1: np.ndarray, img2: np.ndarray):
-        kp1, des1 = self.get_keypoint(img1)
-        kp2, des2 = self.get_keypoint(img2)
-        # self.save_keypoint(kp1, kp2, des1, des2)
-        good, check = self.compare_img(kp1, des1, kp2, des2)
-        # self.visualize_match_point(img1, kp1, img2, kp2, good)
-        return [check]

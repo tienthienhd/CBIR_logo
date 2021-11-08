@@ -1,10 +1,7 @@
-import cv2.cv2
-from flask import Flask, render_template, request, jsonify
-from werkzeug.utils import secure_filename
-import os
+from flask import Flask, request, jsonify
+
 from sift_feature.sift_query import Query_Image
 from utils import parse_args
-
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 url_query = None
@@ -27,7 +24,7 @@ def add_logo2json():
             Q.add_logo2json(logo)
             check = True
         except Exception as e:
-            raise "Process add logo error!!!"
+            raise Exception("Process add logo error!!!") from e
         if check:
             return jsonify_str({"Result": "You added a logo success to file json"})
 
