@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-from sift_query import QueryImage, LabelNotFoundException, LabelExistException
+from sift_query import QueryImage, LabelNotFoundException
 from utils import parse_args, _parse_args
 from loguru import logger
 
