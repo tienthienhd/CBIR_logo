@@ -67,77 +67,11 @@ def compare():
         else:
             return jsonify_str({"results": "Both images are DIFFERENT logo"})
 
-
-# @app.route('/match')
-# def match():
-#     img_path = request.args['img_path']
-#     img_path = 'static/' + img_path
-#
-#     if os.path.exists('static/imgs/matched_kp.png'):
-#         os.remove('static/imgs/matched_kp.png')
-#     if os.path.exists('static/imgs/matched_kp_filtered.png'):
-#         os.remove('static/imgs/matched_kp_filtered.png')
-#
-#     match_and_box(img_path_1=url_query, img_path_2=img_path)
-#
-#     return render_template('results.html', non_filter='imgs/matched_kp.png', filtered='imgs/matched_kp_filted.png')
-#
-# from flask import make_response
-# from functools import wraps, update_wrapper
-# from datetime import datetime
-#
-# def nocache(view):
-#     @wraps(view)
-#     def no_cache(*args, **kwargs):
-#         response = make_response(view(*args, **kwargs))
-#         response.headers['Last-Modified'] = datetime.now()
-#         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-#         response.headers['Pragma'] = 'no-cache'
-#         response.headers['Expires'] = '-1'
-#         return response
-#
-#     return update_wrapper(no_cache, view)
-
-
-@app.route('/show_result/<img>')
-def show_result(img):
-    # preprocess
-
-    return render_template('result_single.html')
-
-
 def jsonify_str(output_list):
     with app.app_context():
         with app.test_request_context():
             result = jsonify(output_list)
     return result
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route('/upload_file', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            # flash('No file part')
-            # return redirect(request.url)
-            return jsonify_str({'error': 'Cannot get image'})
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            return jsonify_str({'error': 'Cannot get image'})
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            url_local = os.path.join('static/imgs', filename)
-            file.save(url_local)
-            global url_query
-            url_query = url_local
-            return 'Ok'
 
 
 if __name__ == "__main__":
