@@ -115,9 +115,9 @@ message    | string  |success or unsuccess                                      
 status_code| int     | status code: 200/400/500 corresponding to message                |
 ```
 ## II. Other API:
-###II.1 Add logo to file json
+### II.1 Add logo to file json
 
-#### I.1.1. Request:
+#### II.1.1. Request:
 
 - URL: ``http://127.0.0.1:5000/add-logo``<br>
 - Method: ``POST``
@@ -143,7 +143,7 @@ label | string |name label necessary add file json          |
 
 ```
 
-#### I.1.2. Response:
+#### II.1.2. Response:
 
 - Result:
 ```json
@@ -164,7 +164,7 @@ status_code| int     | status code: 200/400/500 corresponding to message|
 
 ###II.2 Delete logo in file json
 
-#### I.1.1. Request:
+#### II.1.1. Request:
 
 - URL: ``http://127.0.0.1:5000/delete_logo``<br>
 - Method: ``POST``
@@ -186,7 +186,7 @@ status_code| int     | status code: 200/400/500 corresponding to message|
 label | string |name label necessary delete                 |
 ```
 
-#### I.1.2. Response:
+#### II.1.2. Response:
 
 - Result:
 ```json
