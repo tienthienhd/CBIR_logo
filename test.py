@@ -63,9 +63,9 @@ if __name__ == "__main__":
     path_list_img_pepsi = take_list(type_img="pepsi*")
     path_list_img_coca = take_list(type_img="coca*")
     # result_compare = compare_two_img(path_img1, path_img2)
-    # compare_img_logo(logo2, logo2)
     # img = cv2.imread(path_img1, cv2.COLOR_BGR2GRAY)
     # CompareImg.check_img_have_logo(img)
     path_logo1 = f"{path}/pepsilogo21.jpeg"
     path_logo2 = f"{path}/pepsilogo18.jpg"
-    add2json(path_logo1, path_logo2)
+    compare_img_logo(path_img1, path_img2)
+    # add2json(path_logo1, path_logo2)

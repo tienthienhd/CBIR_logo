@@ -129,7 +129,6 @@ class QueryImage:
             check = False
         return good, check
 
-
     def add_logo2json(self, imgs, label: str):
         if not isinstance(imgs, list):
             imgs = [imgs]
@@ -201,3 +200,26 @@ class QueryImage:
         plt.imshow(result)
         plt.title(f"Image: | Good: {len(kp)}")
         plt.show()
+
+    @staticmethod
+    def visualize_match_img(img1, kp1, img2, kp2, good):
+        matchesMask = None
+        src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
+        dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
+        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+        matchesMask = mask.ravel().tolist()
+        draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
+                           singlePointColor=None,
+                           matchesMask=matchesMask,  # draw only inliers
+                           flags=2)
+        img = cv2.drawMatches(img1, kp1, img2, kp2, good,None, **draw_params)
+        plt.imshow(img)
+        plt.title(f"Image matches with together, GOOD = {len(good)}")
+        plt.show()
+
+    def match_box(self, img1: np.ndarray, img2: np.ndarray):
+        kp1, des1 = self.get_keypoint(img1)
+        kp2, des2 = self.get_keypoint(img2)
+        good, check = self.compare_img(kp1, des1, kp2, des2)
+        self.visualize_match_img(img1, kp1, img2, kp2, good)
+        return [check]
