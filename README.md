@@ -162,7 +162,7 @@ message    | string  |success or unsuccess                              |
 status_code| int     | status code: 200/400/500 corresponding to message|
 ```
 
-###II.2 Delete logo in file json
+### II.2 Delete logo in file json
 
 #### II.1.1. Request:
 
