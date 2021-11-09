@@ -27,6 +27,7 @@ def add_logo2json():
             if logo is None or label is None:
                 response["status_code"] = 400,
                 response["message"] = "Input images is wrong format"
+                return jsonify(response)
 
             logo = [query_image.convert2gray(lg) for lg in logo]
             check = query_image.add_logo2json(logo, label)
