@@ -16,7 +16,7 @@ class LabelNotFoundException(Exception):
 
 class QueryImage:
     def __init__(self):
-        self.sift = cv2.SIFT_create()
+        self.sift = cv2.SIFT_create(nfeatures=200)
         self.threshold = 15
         self.rate = .7
         self.data_path = './file_keypoint.json'
@@ -130,6 +130,9 @@ class QueryImage:
         return good, check
 
     def add_logo2json(self, imgs, label: str):
+        if isinstance(imgs, str):
+            imgs = self.read_img(imgs)
+
         if not isinstance(imgs, list):
             imgs = [imgs]
 
@@ -148,10 +151,11 @@ class QueryImage:
         return True
 
     def check_img_have_logo(self, img, label):
-
+        if isinstance(img, str):
+            img = self.read_img(img)
         info_json = self.load_file_keypoint(label)
         kp, des = self.get_keypoint(img)
-        # self.visualize_match_point(img, kp)
+        # self.visualize_keypoint(img, kp)
         goods, checks = [], []
         count = 0
         for i in range(len(info_json["keypoints"])):
@@ -159,7 +163,7 @@ class QueryImage:
             if check:
                 count += 1
             goods.append(len(good))
-        half = round(len(goods) / 2)
+        half = len(goods) * 0.4
         if count >= half:
             logger.info(f"Image have logo, CORRECT: {count}/{len(goods)}")
             return True
@@ -167,52 +171,73 @@ class QueryImage:
             logger.info(f"Image not have logo, CORRECT:  {count}/{len(goods)}")
             return False
 
-    def check_two_img(self, img1, img2, label):
-        info_json = self.load_file_keypoint(label)
+
+
+    def check_two_img(self, img1: np.ndarray, img2: np.ndarray):
+        if isinstance(img1, str):
+            img1 = self.read_img(img1)
+        if isinstance(img2, str):
+            img2 = self.read_img(img2)
+
+        label = list(self.data.keys())
+        check_compare = False
+
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
-        good1, check1 = [], []
-        good2, check2 = [], []
-        count1, count2 = 0, 0
-        for i in range(len(info_json["keypoints"])):
-            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, info_json["keypoints"][i],
-                                                         info_json["deses"][i])
-            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, info_json["keypoints"][i],
-                                                         info_json["deses"][i])
-            # self.visualize_match_point(img1, kp1, img1, check_of_kp1, good_of_kp1)
-            if check_of_kp1:
-                count1 += 1
-            if check_of_kp2:
-                count2 += 1
-            good1.append(len(good_of_kp1))
-            good2.append(len(good_of_kp2))
-        half = round(len(good1) / 2)
-        if count1 >= half and count2 >= half:
+        # self.visualize_keypoint(img1, kp1)
+        choose_lb = None
+        for lb in label:
+            good1, check1 = [], []
+            good2, check2 = [], []
+            count1, count2 = 0, 0
+            info_json = self.load_file_keypoint(lb)
+            for i in range(len(info_json["keypoints"])):
+                good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, info_json["keypoints"][i],
+                                                             info_json["deses"][i])
+                good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, info_json["keypoints"][i],
+                                                             info_json["deses"][i])
+                if check_of_kp1:
+                    count1 += 1
+                if check_of_kp2:
+                    count2 += 1
+                good1.append(len(good_of_kp1))
+                good2.append(len(good_of_kp2))
+            logger.debug(f"List matches image 1: {good1}")
+            logger.debug(f"List matches image 2: {good2}")
+            half = len(good1) * .4
+            if count1 >= half and count2 >= half:
+                choose_lb = lb
+                check_compare = True
+                break
+        if check_compare:
             logger.info(f"Both pictures are of the SAME type of logo")
-            return True
         else:
-            logger.info(f"Both images are DIFFERENT logo")
-            return False
+            good_couple, check_couple = self.compare_img(kp1, des1, kp2, des2)
+            if check_couple:
+                logger.info(f"Both pictures are of the SAME type of logo")
+                return check_couple, choose_lb
+            else:
+                logger.info(f"Both images are DIFFERENT logo")
+        return check_compare, choose_lb
 
     @staticmethod
     def visualize_keypoint(img, kp):
         result = cv2.drawKeypoints(img, kp, 0, (0, 255, 0), flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         plt.imshow(result)
-        plt.title(f"Image: | Good: {len(kp)}")
+        plt.title(f"Image: | Total Keypoint: {len(kp)}")
         plt.show()
 
     @staticmethod
     def visualize_match_img(img1, kp1, img2, kp2, good):
-        matchesMask = None
         src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
         dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
-        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+        M, mask = cv2.findHomogry(src_pts, dst_pts, cv2.RANSAC, 5.0)
         matchesMask = mask.ravel().tolist()
         draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
                            singlePointColor=None,
                            matchesMask=matchesMask,  # draw only inliers
                            flags=2)
-        img = cv2.drawMatches(img1, kp1, img2, kp2, good,None, **draw_params)
+        img = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
         plt.imshow(img)
         plt.title(f"Image matches with together, GOOD = {len(good)}")
         plt.show()
@@ -221,5 +246,5 @@ class QueryImage:
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         good, check = self.compare_img(kp1, des1, kp2, des2)
-        self.visualize_match_img(img1, kp1, img2, kp2, good)
+        # self.visualize_match_img(img1, kp1, img2, kp2, good)
         return [check]

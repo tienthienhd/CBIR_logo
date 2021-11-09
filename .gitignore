@@ -4,3 +4,4 @@ file_keypoint.json
 *.png
 *.jpeg
 *.log
+*.pyc

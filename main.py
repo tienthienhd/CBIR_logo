@@ -31,7 +31,6 @@ def add_logo2json():
 
             logo = [query_image.convert2gray(lg) for lg in logo]
             check = query_image.add_logo2json(logo, label)
-
             response["status_code"] = 200
             response["message"] = "success"
             if check:
@@ -82,12 +81,13 @@ def check_logo():
 
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
-    img, label = parse_args()
+    img, filename = parse_args()
     img1, img2 = None, None
     response = {
         "status_code": None,
         "message": None,
-        "same": None
+        "same": None,
+        "label": None
     }
     if len(img) == 2:
         img1, img2 = query_image.convert2gray(img[0]), query_image.convert2gray(img[1])
@@ -97,9 +97,11 @@ def compare():
                 response["status_code"] = 400,
                 response["message"] = "Input images is wrong format"
                 return jsonify(response)
-            result = query_image.check_two_img(img1, img2, label)
+
+            result, label = query_image.check_two_img(img1, img2)
             response["status_code"] = 200
             response["message"] = "success"
+            response["label"] = label
             if result:
                 response["same"] = True
             else:

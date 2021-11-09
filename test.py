@@ -67,5 +67,6 @@ if __name__ == "__main__":
     # CompareImg.check_img_have_logo(img)
     path_logo1 = f"{path}/pepsilogo21.jpeg"
     path_logo2 = f"{path}/pepsilogo18.jpg"
-    compare_img_logo(path_img1, path_img2)
+    CompareImg.check_two_img(path_logo1, path_logo2)
+    # compare_img_logo(path_img1, path_img2)
     # add2json(path_logo1, path_logo2)
