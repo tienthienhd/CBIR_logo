@@ -171,8 +171,6 @@ class QueryImage:
             logger.info(f"Image not have logo, CORRECT:  {count}/{len(goods)}")
             return False
 
-
-
     def check_two_img(self, img1: np.ndarray, img2: np.ndarray):
         if isinstance(img1, str):
             img1 = self.read_img(img1)
@@ -218,6 +216,7 @@ class QueryImage:
                 return check_couple, choose_lb
             else:
                 logger.info(f"Both images are DIFFERENT logo")
+        logger.debug(f"Label of image: {choose_lb}")
         return check_compare, choose_lb
 
     @staticmethod
@@ -248,3 +247,13 @@ class QueryImage:
         good, check = self.compare_img(kp1, des1, kp2, des2)
         # self.visualize_match_img(img1, kp1, img2, kp2, good)
         return [check]
+
+    def delete_logo(self, name_logo):
+        if name_logo not in self.data:
+            logger.info(f"Logo not not in file json")
+            return False
+        del self.data[name_logo]
+        with open(self.data_path, "w") as fp:
+            fp.write(json.dumps(self.data))
+        logger.info(f"Logo {name_logo} is deleted out of file json")
+        return True

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 
 from sift_query import QueryImage, LabelNotFoundException
-from utils import parse_args, _parse_args
+from utils import parse_args, _parse_args, lb_parse_args
 from loguru import logger
 
 logger.add('logs/CBIR_logo.log', rotation="50 MB", retention='1 week')
@@ -81,7 +81,7 @@ def check_logo():
 
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
-    img, filename = parse_args()
+    img = parse_args()
     img1, img2 = None, None
     response = {
         "status_code": None,
@@ -116,6 +116,26 @@ def compare():
         response["status_code"] = 500
         response["message"] = "Internal server error"
     return jsonify(response)
+
+@app.route("/delete_logo", methods=["GET", "POST"])
+def delete_logo():
+    label = lb_parse_args()
+    response = {
+        "status_code": None,
+        "message": None,
+        "deleted": None
+    }
+    try:
+        if request.method == "POST":
+            result = query_image.delete_logo(label)
+            response["status_code"] = 200
+            response["message"] = "success"
+            response["deleted"] = result
+            return response
+    except Exception as e:
+        logger.exception(e)
+        response["status_code"] = 500
+        response["message"] = "Internal server error"
 
 
 if __name__ == "__main__":
