@@ -250,8 +250,7 @@ class QueryImage:
 
     def delete_logo(self, name_logo):
         if name_logo not in self.data:
-            logger.info(f"Logo not not in file json")
-            return False
+            raise LabelNotFoundException(f"Not found label: {name_logo}")
         del self.data[name_logo]
         with open(self.data_path, "w") as fp:
             fp.write(json.dumps(self.data))

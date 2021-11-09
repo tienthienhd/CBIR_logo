@@ -132,6 +132,7 @@ def _parse_args():
     imgs, filenames = parse_request(images)
     return imgs, label
 
+
 def lb_parse_args():
     parser = reqparse.RequestParser()
     parser.add_argument("label", required=True, location=["form", "args", "files", "json"])

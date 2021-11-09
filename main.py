@@ -117,6 +117,7 @@ def compare():
         response["message"] = "Internal server error"
     return jsonify(response)
 
+
 @app.route("/delete_logo", methods=["GET", "POST"])
 def delete_logo():
     label = lb_parse_args()
@@ -132,10 +133,18 @@ def delete_logo():
             response["message"] = "success"
             response["deleted"] = result
             return response
+
+    except LabelNotFoundException as e:
+        logger.error(e)
+        response["status_code"] = 400
+        response["message"] = "Label not found in data"
+
     except Exception as e:
         logger.exception(e)
         response["status_code"] = 500
         response["message"] = "Internal server error"
+
+    return jsonify(response)
 
 
 if __name__ == "__main__":
