@@ -163,6 +163,8 @@ class QueryImage:
             if check:
                 count += 1
             goods.append(len(good))
+
+        logger.debug(f"List matches: {goods}")
         half = len(goods) * 0.4
         if count >= half:
             logger.info(f"Image have logo, CORRECT: {count}/{len(goods)}")
