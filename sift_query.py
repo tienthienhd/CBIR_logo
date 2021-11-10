@@ -196,7 +196,7 @@ class QueryImage:
         half = len(good1) * .4
         if count1 >= half and count2 >= half:
             check_compare = True
-        return check_compare
+        return check_compare, good1
 
     def check_two_img(self, img1: np.ndarray, img2: np.ndarray, lb_check=None):
         if isinstance(img1, str):
@@ -209,14 +209,16 @@ class QueryImage:
 
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
-        # self.visualize_keypoint(img1, kp1)
+        # self.visualize_match_img(img1, kp1, img2, kp2, good)
         choose_lb = None
         if lb_check is not None:
-            check_compare = self.take_result_compare(lb_check[0], kp1, des1, kp2, des2, check_compare)
+            check_compare, good = self.take_result_compare(lb_check[0], kp1, des1, kp2, des2, check_compare)
+            choose_lb = lb_check[0]
         else:
             for lb in label:
-                check_compare = self.take_result_compare(lb, kp1, des1, kp2, des2, check_compare)
+                check_compare, good = self.take_result_compare(lb, kp1, des1, kp2, des2, check_compare)
                 if check_compare:
+                    choose_lb = lb
                     break
 
         if check_compare:
@@ -242,7 +244,7 @@ class QueryImage:
     def visualize_match_img(img1, kp1, img2, kp2, good):
         src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
         dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
-        M, mask = cv2.findHomogry(src_pts, dst_pts, cv2.RANSAC, 5.0)
+        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
         matchesMask = mask.ravel().tolist()
         draw_params = dict(matchColor=(0, 255, 0),  # draw matches in green color
                            singlePointColor=None,
@@ -257,7 +259,7 @@ class QueryImage:
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         good, check = self.compare_img(kp1, des1, kp2, des2)
-        # self.visualize_match_img(img1, kp1, img2, kp2, good)
+        self.visualize_match_img(img1, kp1, img2, kp2, good)
         return [check]
 
     def delete_logo(self, name_logo):
