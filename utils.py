@@ -30,6 +30,9 @@ class TLSAdapter(requests.adapters.HTTPAdapter):
 class ImageException(Exception):
     pass
 
+class ImageNotExit(Exception):
+    pass
+
 
 def url_to_image(url):
     """Download image from url"""
@@ -72,26 +75,29 @@ def string_to_image(img_string):
 def parse_request(images):
     imgs = []
     filenames = []
-    for image in images:
-        img = None
-        filename = None
-        if isinstance(image, str):
-            if len(image) < 2:
-                raise ImageException("String image is wrong format")
-            if image.startswith("http"):
-                img = url_to_image(image)
-                filename = "url"
-            else:
-                img = string_to_image(image)
-                filename = "base64"
-        elif isinstance(image, werkzeug.datastructures.FileStorage):
-            if is_support_type(image.filename):
-                img = stream_to_image(image)
-                filename = image.filename
-            else:
-                raise ImageException("Image is wrong format")
-        imgs.append(img)
-        filenames.append(filename)
+    try:
+        for image in images:
+            img = None
+            filename = None
+            if isinstance(image, str):
+                if len(image) < 2:
+                    raise ImageException("String image is wrong format")
+                if image.startswith("http"):
+                    img = url_to_image(image)
+                    filename = "url"
+                else:
+                    img = string_to_image(image)
+                    filename = "base64"
+            elif isinstance(image, werkzeug.datastructures.FileStorage):
+                if is_support_type(image.filename):
+                    img = stream_to_image(image)
+                    filename = image.filename
+                else:
+                    raise ImageException("Image is wrong format")
+            imgs.append(img)
+            filenames.append(filename)
+    except:
+        raise ImageException("Image not exist")
     return imgs, filenames
 
 
