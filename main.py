@@ -57,7 +57,7 @@ def add_logo2json():
 
 
     except ImageException as e:
-        logger.exception(e)
+        logger.error(e)
         response["status_code"] = 400
         response["message"] = "Image is not exist or wrong format"
 
@@ -105,7 +105,7 @@ def check_logo():
                 response["has_logo"] = False
 
     except ImageException as e:
-        logger.exception(e)
+        logger.error(e)
         response["status_code"] = 400
         response["message"] = "Image is not exist or wrong format"
 
@@ -159,7 +159,7 @@ def compare():
                 response["same"] = False
 
     except ImageException as e:
-        logger.exception(e)
+        logger.error(e)
         response["status_code"] = 400
         response["message"] = "Image is not exist or wrong format"
     except LabelNotFoundException as e:
@@ -195,7 +195,7 @@ def delete_logo():
             return response
 
     except ImageException as e:
-        logger.exception(e)
+        logger.error(e)
         response["status_code"] = 400
         response["message"] = "Image is not exist or wrong format"
 
