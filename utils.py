@@ -75,25 +75,21 @@ def parse_request(images):
     for image in images:
         img = None
         filename = None
-        try:
-            if isinstance(image, str):
-                if len(image) < 2:
-                    raise ImageException("String image is wrong format")
-                if image.startswith("http"):
-                    img = url_to_image(image)
-                    filename = "url"
-                else:
-                    img = string_to_image(image)
-                    filename = "base64"
-            elif isinstance(image, werkzeug.datastructures.FileStorage):
-                if is_support_type(image.filename):
-                    img = stream_to_image(image)
-                    filename = image.filename
-                else:
-                    raise ImageException("Image is wrong format")
-
-        except Exception as e:
-            raise e
+        if isinstance(image, str):
+            if len(image) < 2:
+                raise ImageException("String image is wrong format")
+            if image.startswith("http"):
+                img = url_to_image(image)
+                filename = "url"
+            else:
+                img = string_to_image(image)
+                filename = "base64"
+        elif isinstance(image, werkzeug.datastructures.FileStorage):
+            if is_support_type(image.filename):
+                img = stream_to_image(image)
+                filename = image.filename
+            else:
+                raise ImageException("Image is wrong format")
         imgs.append(img)
         filenames.append(filename)
     return imgs, filenames

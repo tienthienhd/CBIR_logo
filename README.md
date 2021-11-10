@@ -202,5 +202,5 @@ label | string |name label necessary delete                 |
 -----------|---------|--------------------------------------------------|
 deleted    | boolean |value True if label deleted                       |
 message    | string  |success or unsuccess                              |
-status_code| int     | status code: 200/400/500 corresponding to message|
+status_code| int     |status code: 200/400/500 corresponding to message |
 ```

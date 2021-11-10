@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 
 from sift_query import QueryImage, LabelNotFoundException
-from utils import parse_args, _parse_args, lb_parse_args
+from utils import parse_args, _parse_args, lb_parse_args, ImageException
 from loguru import logger
 
 logger.add('logs/CBIR_logo.log', rotation="50 MB", retention='1 week')
@@ -16,16 +16,16 @@ query_image = QueryImage()
 
 @app.route("/add-logo", methods=["GET", "POST"])
 def add_logo2json():
-    logo, label = _parse_args()
     response = {
         "status_code": None,
         "message": None,
         "add_logo": None
     }
     try:
+        logo, label = _parse_args()
         if request.method == "POST":
             if logo is None or label is None:
-                response["status_code"] = 400,
+                response["status_code"] = 400
                 response["message"] = "Input images is wrong format"
                 return jsonify(response)
 
@@ -37,6 +37,12 @@ def add_logo2json():
                 response["add_logo"] = True
             else:
                 response["add_logo"] = False
+
+    except ImageException as e:
+        logger.exception(e)
+        response["status_code"] = 400
+        response["message"] = "Image is wrong format"
+
     except Exception as e:
         logger.exception(e)
         response["status_code"] = 500
@@ -47,13 +53,13 @@ def add_logo2json():
 
 @app.route("/check-logo", methods=["GET", "POST"])
 def check_logo():
-    img, label = _parse_args()
     response = {
         "status_code": None,
         "message": None,
         "has_logo": None
     }
     try:
+        img, label = _parse_args()
         if request.method == "POST":
             if img is None or img[0] is None:
                 response["status_code"] = 400
@@ -68,6 +74,11 @@ def check_logo():
                 response["has_logo"] = True
             else:
                 response["has_logo"] = False
+    except ImageException as e:
+        logger.exception(e)
+        response["status_code"] = 400
+        response["message"] = "Image is wrong format"
+
     except LabelNotFoundException as e:
         logger.error(e)
         response["status_code"] = 400
@@ -81,20 +92,20 @@ def check_logo():
 
 @app.route("/compare", methods=["GET", "POST"])
 def compare():
-    img = parse_args()
-    img1, img2 = None, None
     response = {
         "status_code": None,
         "message": None,
         "same": None,
         "label": None
     }
-    if len(img) == 2:
-        img1, img2 = query_image.convert2gray(img[0]), query_image.convert2gray(img[1])
     try:
+        img = parse_args()
+        img1, img2 = None, None
+        if len(img) == 2:
+            img1, img2 = query_image.convert2gray(img[0]), query_image.convert2gray(img[1])
         if request.method == "POST":
             if img1 is None or img2 is None:
-                response["status_code"] = 400,
+                response["status_code"] = 400
                 response["message"] = "Input images is wrong format"
                 return jsonify(response)
 
@@ -107,6 +118,10 @@ def compare():
             else:
                 response["same"] = False
 
+    except ImageException as e:
+        logger.exception(e)
+        response["status_code"] = 400
+        response["message"] = "Image is wrong format"
     except LabelNotFoundException as e:
         logger.error(e)
         response["status_code"] = 400
@@ -120,19 +135,24 @@ def compare():
 
 @app.route("/delete_logo", methods=["GET", "POST"])
 def delete_logo():
-    label = lb_parse_args()
     response = {
         "status_code": None,
         "message": None,
         "deleted": None
     }
     try:
+        label = lb_parse_args()
         if request.method == "POST":
             result = query_image.delete_logo(label)
             response["status_code"] = 200
             response["message"] = "success"
             response["deleted"] = result
             return response
+
+    except ImageException as e:
+        logger.exception(e)
+        response["status_code"] = 400
+        response["message"] = "Image is wrong format"
 
     except LabelNotFoundException as e:
         logger.error(e)
