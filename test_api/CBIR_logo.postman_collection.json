@@ -42,22 +42,23 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/cocalogo09.jpg"
+							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca09.jpg"
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/cocalogo01.png"
+							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca01.jpeg"
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/cocalogo03.jpg"
+							"src": []
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/cocalogo02.jpg"
+							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca02.png",
+							"disabled": true
 						},
 						{
 							"key": "label",
@@ -94,12 +95,12 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca16.jpg"
+							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/pepsilogo02.jpg"
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca001.jpg"
+							"src": []
 						},
 						{
 							"key": "label",
