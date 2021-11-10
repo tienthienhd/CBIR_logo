@@ -31,10 +31,10 @@ class ImageException(Exception):
 
 def url_to_image(url):
     """Download image from url"""
-    session = requests.session()
-    session.mount('https://', TLSAdapter())
-    res = session.get(url, timeout=5)
-    session.close()
+    # session = requests.session()
+    # session.mount('https://', TLSAdapter())
+    res = requests.get(url, timeout=5, verify=False)
+    # session.close()
     image = np.asarray(bytearray(res.content), dtype="uint8")
     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
     return image
