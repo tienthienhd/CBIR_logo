@@ -15,10 +15,10 @@ class LabelNotFoundException(Exception):
 
 
 class QueryImage:
-    def __init__(self):
-        self.sift = cv2.SIFT_create(nfeatures=200)
-        self.threshold = 15
-        self.rate = .7
+    def __init__(self, max_features=None, threshold=15, rate=0.7):
+        self.sift = cv2.SIFT_create(nfeatures=max_features)
+        self.threshold = threshold
+        self.rate = rate
         self.data_path = './file_keypoint.json'
         if os.path.exists(self.data_path):
             with open(self.data_path) as json_file:
