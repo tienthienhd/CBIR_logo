@@ -12,7 +12,7 @@ url_query = None
 url_img_results = []
 
 app = Flask(__name__)
-query_image = QueryImage()
+query_image = QueryImage(rate=.6, nOctaveLayers=8)
 
 
 @app.route("/add-logo", methods=["GET", "POST"])
@@ -35,6 +35,7 @@ def add_logo2json():
         args_ = parser.parse_args()
         images = args_['image']
         label = args_["label"]
+
         logo, filename = parse_request(images)
 
         if request.method == "POST":

@@ -15,14 +15,20 @@ class LabelNotFoundException(Exception):
 
 
 class QueryImage:
-    def __init__(self, max_features=None, threshold=15, rate=0.7):
-        self.sift = cv2.SIFT_create(nfeatures=max_features)
+    def __init__(self, max_features=None, nOctaveLayers=None, contrastThreshold=None, edgeThreshold=None, sigma=None,
+                 threshold=15, rate=0.7):
+        self.sift = cv2.SIFT_create(nfeatures=max_features, nOctaveLayers=nOctaveLayers,
+                                    contrastThreshold=contrastThreshold, edgeThreshold=edgeThreshold, sigma=sigma)
         self.threshold = threshold
         self.rate = rate
         self.data_path = './file_keypoint.json'
         if os.path.exists(self.data_path):
             with open(self.data_path) as json_file:
-                self.data = json.load(json_file)
+                try:
+                    self.data = json.load(json_file)
+                except:
+                    logger.info("File json is Empty. Please add logo to file")
+                    self.data = {}
         else:
             self.data = {}
 
@@ -70,20 +76,21 @@ class QueryImage:
         dict_kp["octave"] = kp_i.octave
         return dict_kp
 
-    def take_kp_des(self, kp: Tuple, des: np.ndarray) -> Dict:
+    def take_kp_des(self, kp: Tuple, des: np.ndarray, img) -> Dict:
         result_dict = {}
         result_dict["kp"] = []
         for element in kp:
             result_dict["kp"].append(self.take_kp(element))
         result_dict["des"] = des.tolist()
+        result_dict["img"] = img.tolist()
         return result_dict
 
-    def create_file_keypoint(self, kp: List, des: List[np.ndarray], type_img: str) -> Dict:
+    def create_file_keypoint(self, kp: List, des: List[np.ndarray], type_img: str, img) -> Dict:
         result = {}
         result[type_img] = {}
         result[type_img]["imgs"] = []
         for i in range(len(kp)):
-            result[type_img]["imgs"].append(self.take_kp_des(kp[i], des[i]))
+            result[type_img]["imgs"].append(self.take_kp_des(kp[i], des[i], img))
         return result
 
     def save_keypoint(self, kp1, kp2, des1, des2):
@@ -111,22 +118,27 @@ class QueryImage:
         info = self.data[label]["imgs"]
         keypoints = []
         deses = []
+        images = []
         for sub_inf in info:
             kp = sub_inf["kp"]
             take_kp = self.take_inf_kp(kp)
-            des = np.array(sub_inf["des"])
+            des = sub_inf["des"]
+            if "img" in sub_inf:
+                img = sub_inf["img"]
+                images.append(img)
             keypoints.append(take_kp)
             deses.append(des)
         return {
             "keypoints": keypoints,
-            "deses": deses
+            "deses": deses,
+            "images": images
         }
 
     def compare_img(self, kp1, des1, kp2, des2):
         good = self.matching(kp1, kp2, des1, des2)
-        check = True
-        if len(good) < self.threshold:
-            check = False
+        check = False
+        if len(good) >= self.threshold:
+            check = True
         return good, check
 
     def add_logo2json(self, imgs, label: str):
@@ -144,7 +156,7 @@ class QueryImage:
 
         for img in imgs:
             kp, des = self.get_keypoint(img)
-            info.append(self.take_kp_des(kp, des))
+            info.append(self.take_kp_des(kp, des, img))
         with open(self.data_path, 'w') as fp:
             fp.write(json.dumps(self.data))
         logger.info(f"You added a logo {label} success to file json")
@@ -215,7 +227,8 @@ class QueryImage:
         choose_lb = None
         if lb_check is not None:
             check_compare, good = self.take_result_compare(lb_check[0], kp1, des1, kp2, des2, check_compare)
-            choose_lb = lb_check[0]
+            if check_compare:
+                choose_lb = lb_check[0]
         else:
             for lb in label:
                 check_compare, good = self.take_result_compare(lb, kp1, des1, kp2, des2, check_compare)
