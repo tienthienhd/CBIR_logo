@@ -2,13 +2,11 @@ import base64
 import io
 import re
 import ssl
-
 import cv2
 import numpy as np
 import requests
 import werkzeug
 from PIL import Image
-from flask_restful import reqparse
 from urllib3 import poolmanager
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -28,9 +26,6 @@ class TLSAdapter(requests.adapters.HTTPAdapter):
 
 
 class ImageException(Exception):
-    pass
-
-class ImageNotExit(Exception):
     pass
 
 
@@ -92,52 +87,10 @@ def parse_request(images):
                 if is_support_type(image.filename):
                     img = stream_to_image(image)
                     filename = image.filename
-                else:
-                    raise ImageException("Image is wrong format")
             imgs.append(img)
             filenames.append(filename)
     except:
-        raise ImageException("Image not exist")
+        raise ImageException("Image is not exist or wrong format")
     return imgs, filenames
 
 
-def parse_args(*args):
-    parser = reqparse.RequestParser()
-    parser.add_argument('image', required=True, location=['form', 'args', 'files', 'json'],
-                        action='append')
-    if len(args) > 0:
-        for para in args:
-            parser.add_argument(para, location=['form', 'args', 'files', 'json'])
-    args_ = parser.parse_args(strict=True)
-    if len(args_['image']) > 0 and "FileStorage" in args_['image'][0]:
-        parser.replace_argument('image', type=werkzeug.datastructures.FileStorage, required=True, location='files',
-                                action='append')
-    args_ = parser.parse_args(strict=True)
-
-    images = args_['image']
-    imgs, filenames = parse_request(images)
-    return imgs
-
-
-def _parse_args():
-    parser = reqparse.RequestParser()
-    parser.add_argument("image", required=True, location=["form", "args", "files", "json"], action="append")
-    parser.add_argument("label", required=True, location=["form", "args", "files", "json"])
-    args_ = parser.parse_args(strict=True)
-    if len(args_['image']) > 0 and "FileStorage" in args_['image'][0]:
-        parser.replace_argument('image', type=werkzeug.datastructures.FileStorage, required=True, location='files',
-                                action='append')
-    args_ = parser.parse_args(strict=True)
-
-    images = args_['image']
-    label = args_["label"]
-    imgs, filenames = parse_request(images)
-    return imgs, label
-
-
-def lb_parse_args():
-    parser = reqparse.RequestParser()
-    parser.add_argument("label", required=True, location=["form", "args", "files", "json"])
-    args_ = parser.parse_args(strict=True)
-    label = args_["label"]
-    return label

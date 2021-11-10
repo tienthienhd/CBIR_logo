@@ -171,7 +171,34 @@ class QueryImage:
             logger.info(f"Image not have logo, CORRECT:  {count}/{len(goods)}")
             return False
 
-    def check_two_img(self, img1: np.ndarray, img2: np.ndarray):
+    def check_match_kp(self, lb, kp1, des1, kp2, des2):
+        good1, check1 = [], []
+        good2, check2 = [], []
+        count1, count2 = 0, 0
+        info_json = self.load_file_keypoint(lb)
+        for i in range(len(info_json["keypoints"])):
+            good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, info_json["keypoints"][i],
+                                                         info_json["deses"][i])
+            good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, info_json["keypoints"][i],
+                                                         info_json["deses"][i])
+            if check_of_kp1:
+                count1 += 1
+            if check_of_kp2:
+                count2 += 1
+            good1.append(len(good_of_kp1))
+            good2.append(len(good_of_kp2))
+        logger.debug(f"List matches image 1: {good1}")
+        logger.debug(f"List matches image 2: {good2}")
+        return count1, count2, good1
+
+    def take_result_compare(self, lb_check, kp1, des1, kp2, des2, check_compare=False):
+        count1, count2, good1 = self.check_match_kp(lb_check, kp1, des1, kp2, des2)
+        half = len(good1) * .4
+        if count1 >= half and count2 >= half:
+            check_compare = True
+        return check_compare
+
+    def check_two_img(self, img1: np.ndarray, img2: np.ndarray, lb_check=None):
         if isinstance(img1, str):
             img1 = self.read_img(img1)
         if isinstance(img2, str):
@@ -184,29 +211,14 @@ class QueryImage:
         kp2, des2 = self.get_keypoint(img2)
         # self.visualize_keypoint(img1, kp1)
         choose_lb = None
-        for lb in label:
-            good1, check1 = [], []
-            good2, check2 = [], []
-            count1, count2 = 0, 0
-            info_json = self.load_file_keypoint(lb)
-            for i in range(len(info_json["keypoints"])):
-                good_of_kp1, check_of_kp1 = self.compare_img(kp1, des1, info_json["keypoints"][i],
-                                                             info_json["deses"][i])
-                good_of_kp2, check_of_kp2 = self.compare_img(kp2, des2, info_json["keypoints"][i],
-                                                             info_json["deses"][i])
-                if check_of_kp1:
-                    count1 += 1
-                if check_of_kp2:
-                    count2 += 1
-                good1.append(len(good_of_kp1))
-                good2.append(len(good_of_kp2))
-            logger.debug(f"List matches image 1: {good1}")
-            logger.debug(f"List matches image 2: {good2}")
-            half = len(good1) * .4
-            if count1 >= half and count2 >= half:
-                choose_lb = lb
-                check_compare = True
-                break
+        if lb_check is not None:
+            check_compare = self.take_result_compare(lb_check[0], kp1, des1, kp2, des2, check_compare)
+        else:
+            for lb in label:
+                check_compare = self.take_result_compare(lb, kp1, des1, kp2, des2, check_compare)
+                if check_compare:
+                    break
+
         if check_compare:
             logger.info(f"Both pictures are of the SAME type of logo")
         else:
