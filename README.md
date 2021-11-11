@@ -11,6 +11,7 @@ Component function:
 - Add logo to do compare data 
 - Delete logo in data
 
+===================================================================================================
 ## I. Main API:
 
 ### I.1. Compares images, are they similar?
