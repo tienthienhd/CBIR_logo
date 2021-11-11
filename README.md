@@ -18,7 +18,7 @@ Component function:
 
 #### I.1.1. Request:
 
-- URL: ``http://127.0.0.1:5000/compare``<br>
+- URL: [http://127.0.0.1:5000/compare]()
 - Method: ``POST``
 - Format: ``JSON``
 - Input:
@@ -30,7 +30,7 @@ Component function:
 }
 ```
 
-or if compare with label
+_or if compare with label_
 
 ```json
 {
@@ -42,7 +42,7 @@ or if compare with label
 }
 ```
 
-- Description:
+**- Description:**
 
 ```table
 |------------------------------------------------------------|
@@ -55,7 +55,7 @@ or if compare with label
 
 #### I.1.2. Response:
 
-- Result:
+**- Result:**
 ```json
 {
     "label": "coca",
@@ -64,7 +64,7 @@ or if compare with label
     "status_code": 200
 }
 ```
-- Description:
+**- Description:**
 ```table
 |-----------------------------------------------------------------------|
 |    Name   |  Type  |               Description                        |
@@ -80,7 +80,7 @@ or if compare with label
 
 #### I.2.1. Request:
 
-- URL: ``http://127.0.0.1:5000/check-logo``<br>
+- URL: [http://127.0.0.1:5000/check-logo]()
 - Method: ``POST``
 - Format: ``JSON``
 - Input:
@@ -92,7 +92,7 @@ or if compare with label
 }
 ```
 
-- Description:
+**- Description:**
 
 ```table
 |------------------------------------------------------------|
@@ -107,7 +107,7 @@ or if compare with label
 #### I.2.2. Response:
 
 
-- Result:
+**- Result:**
 ```json
 {
     "has_logo": true,
@@ -115,7 +115,7 @@ or if compare with label
     "status_code": 200
 }
 ```
-- Description:
+**- Description:**
 ```table
 |----------------------------------------------------------------------------------------|
 |    Name   |  Type   |               Description                                        |
@@ -130,7 +130,7 @@ or if compare with label
 
 #### II.1.1. Request:
 
-- URL: ``http://127.0.0.1:5000/add-logo``<br>
+- URL: [http://127.0.0.1:5000/add-logo]()
 - Method: ``POST``
 - Format: ``JSON``
 - Input:
@@ -144,7 +144,7 @@ or if compare with label
 
 
 
-- Description:
+**- Description:**
 
 ```table
 |------------------------------------------------------------|
@@ -157,7 +157,7 @@ or if compare with label
 
 #### II.1.2. Response:
 
-- Result:
+**- Result:**
 ```json
 {
     "add_logo": true,
@@ -166,7 +166,7 @@ or if compare with label
     "status_code": 200
 }
 ```
-- Description:
+**- Description:**
 ```table
 |------------------------------------------------------------------------|
 |    Name   |  Type   |               Description                        |
@@ -182,7 +182,7 @@ or if compare with label
 
 #### II.1.1. Request:
 
-- URL: ``http://127.0.0.1:5000/delete_logo``<br>
+- URL: [http://127.0.0.1:5000/delete_logo]()
 - Method: ``POST``
 - Format: ``JSON``
 - Input:
@@ -194,7 +194,7 @@ or if compare with label
 ```
 
 
-- Description:
+**- Description:**
 
 ```table
 |------------------------------------------------------------|
@@ -206,7 +206,7 @@ or if compare with label
 
 #### II.1.2. Response:
 
-- Result:
+**- Result:**
 ```json
 {
     "deleted": true,
@@ -215,7 +215,7 @@ or if compare with label
     "status_code": 200
 }
 ```
-- Description:
+**- Description:**
 ```table
 |------------------------------------------------------------------------|
 |    Name   |  Type   |               Description                        |
@@ -226,4 +226,4 @@ or if compare with label
 |status_code| int     |status code: 200/400/500 corresponding to message |
 |------------------------------------------------------------------------|
 ```
-===================================================================================================
+=====================================================================================================
