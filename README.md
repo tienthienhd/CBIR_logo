@@ -30,14 +30,15 @@ Component function:
 }
 ```
 
-or
+or if compare with label
 
 ```json
 {
   "image": [
     "link image or image 1",
     "link image or image 2"
-  ]
+  ],
+  "label": "coca"
 }
 ```
 
@@ -47,6 +48,7 @@ or
  Name |  Type  |               Description                  |
 ------|------- |--------------------------------------------|
 image | string |link image or image be encoded format base64|
+label | string |name label image to compare                 |    
 ```
 
 #### I.1.2. Response:
@@ -151,6 +153,7 @@ label | string |name label necessary add file json          |
 {
     "add_logo": true,
     "message": "success",
+    "label": "coca",
     "status_code": 200
 }
 ```
@@ -160,6 +163,7 @@ label | string |name label necessary add file json          |
 -----------|---------|--------------------------------------------------|
 add_logo   | boolean |value True if add success                         |
 message    | string  |success or unsuccess                              |
+label      | string  |label of image added file json                    |
 status_code| int     | status code: 200/400/500 corresponding to message|
 ```
 
@@ -194,6 +198,7 @@ label | string |name label necessary delete                 |
 {
     "deleted": true,
     "message": "success",
+    "label": "coca",
     "status_code": 200
 }
 ```
@@ -203,5 +208,7 @@ label | string |name label necessary delete                 |
 -----------|---------|--------------------------------------------------|
 deleted    | boolean |value True if label deleted                       |
 message    | string  |success or unsuccess                              |
+label      | string  |name label is deleted                             |
 status_code| int     |status code: 200/400/500 corresponding to message |
 ```
+===================================================================================================
