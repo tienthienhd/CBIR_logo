@@ -12,7 +12,7 @@ url_query = None
 url_img_results = []
 
 app = Flask(__name__)
-query_image = QueryImage(rate=.6, nOctaveLayers=8)
+query_image = QueryImage(rate=.6, nOctaveLayers=6)
 
 
 @app.route("/add-logo", methods=["GET", "POST"])
@@ -27,7 +27,7 @@ def add_logo2json():
     try:
         parser = reqparse.RequestParser()
         parser.add_argument("image", required=True, location=["form", "args", "files", "json"], action="append")
-        parser.add_argument("label", required=True, location=["form", "args", "files", "json"])
+        parser.add_argument("label", required=False, location=["form", "args", "files", "json"])
         args_ = parser.parse_args()
         if len(args_['image']) > 0 and "FileStorage" in args_['image'][0]:
             parser.replace_argument('image', type=werkzeug.datastructures.FileStorage, required=True, location='files',

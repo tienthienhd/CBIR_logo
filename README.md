@@ -1,3 +1,5 @@
+
+![logopepsi](static/imgs/pepsilogo02.jpg) 
 # [CBIR] Project compare logo
 
 ## API request tutorial document
