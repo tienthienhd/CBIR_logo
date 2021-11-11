@@ -45,10 +45,12 @@ or if compare with label
 - Description:
 
 ```table
- Name |  Type  |               Description                  |
-------|------- |--------------------------------------------|
-image | string |link image or image be encoded format base64|
-label | string |name label image to compare                 |    
+|------------------------------------------------------------|
+| Name |  Type  |               Description                  |
+|------|------- |--------------------------------------------|
+|image | string |link image or image be encoded format base64|
+|label | string |name label image to compare                 |    
+|------------------------------------------------------------|
 ```
 
 #### I.1.2. Response:
@@ -64,12 +66,14 @@ label | string |name label image to compare                 |
 ```
 - Description:
 ```table
-    Name   |  Type  |               Description                        |
------------|--------|--------------------------------------------------|
-label      | string |name logo or null                                 |
-message    | string |success or unsuccess                              |
-same       | boolean|value compare same or difference logo             |
-status_code| int    | status code: 200/400/500 corresponding to message|
+|-----------------------------------------------------------------------|
+|    Name   |  Type  |               Description                        |
+|-----------|--------|--------------------------------------------------|
+|label      | string |name logo or null                                 |
+|message    | string |success or unsuccess                              |
+|same       | boolean|value compare same or difference logo             |
+|status_code| int    | status code: 200/400/500 corresponding to message|
+|-----------------------------------------------------------------------|
 ```
 
 ### I.2. Images have logo predefined
@@ -91,10 +95,12 @@ status_code| int    | status code: 200/400/500 corresponding to message|
 - Description:
 
 ```table
- Name |  Type  |               Description                  |
-------|------- |--------------------------------------------|
-image | string |link image or image be encoded format base64|
-label | string |name logo necessary checked                 |
+|------------------------------------------------------------|
+| Name |  Type  |               Description                  |
+|------|------- |--------------------------------------------|
+|image | string |link image or image be encoded format base64|
+|label | string |name logo necessary checked                 |
+|------------------------------------------------------------|
 ```
 
 
@@ -111,11 +117,13 @@ label | string |name logo necessary checked                 |
 ```
 - Description:
 ```table
-    Name   |  Type   |               Description                                        |
------------|---------|------------------------------------------------------------------|
-has_logo   | boolean |if image have logo is true and false if not have logo, orther null|
-message    | string  |success or unsuccess                                              |
-status_code| int     | status code: 200/400/500 corresponding to message                |
+|----------------------------------------------------------------------------------------|
+|    Name   |  Type   |               Description                                        |
+|-----------|---------|------------------------------------------------------------------|
+|has_logo   | boolean |if image have logo is true and false if not have logo, orther null|
+|message    | string  |success or unsuccess                                              |
+|status_code| int     | status code: 200/400/500 corresponding to message                |
+|----------------------------------------------------------------------------------------|
 ```
 ## II. Other API:
 ### II.1 Add logo to file json
@@ -139,11 +147,12 @@ status_code| int     | status code: 200/400/500 corresponding to message        
 - Description:
 
 ```table
- Name |  Type  |               Description                  |
-------|------- |--------------------------------------------|
-image | string |link image or image be encoded format base64|
-label | string |name label necessary add file json          |
-
+|------------------------------------------------------------|
+| Name |  Type  |               Description                  |
+|------|------- |--------------------------------------------|
+|image | string |link image or image be encoded format base64|
+|label | string |name label necessary add file json          |
+|------------------------------------------------------------|
 ```
 
 #### II.1.2. Response:
@@ -159,12 +168,14 @@ label | string |name label necessary add file json          |
 ```
 - Description:
 ```table
-    Name   |  Type   |               Description                        |
------------|---------|--------------------------------------------------|
-add_logo   | boolean |value True if add success                         |
-message    | string  |success or unsuccess                              |
-label      | string  |label of image added file json                    |
-status_code| int     | status code: 200/400/500 corresponding to message|
+|------------------------------------------------------------------------|
+|    Name   |  Type   |               Description                        |
+|-----------|---------|--------------------------------------------------|
+|add_logo   | boolean |value True if add success                         |
+|message    | string  |success or unsuccess                              |
+|label      | string  |label of image added file json                    |
+|status_code| int     |status code: 200/400/500 corresponding to message |
+|------------------------------------------------------------------------|
 ```
 
 ### II.2 Delete logo in file json
@@ -186,9 +197,11 @@ status_code| int     | status code: 200/400/500 corresponding to message|
 - Description:
 
 ```table
- Name |  Type  |               Description                  |
-------|------- |--------------------------------------------|
-label | string |name label necessary delete                 |
+|------------------------------------------------------------|
+| Name |  Type  |               Description                  |
+|------|------- |--------------------------------------------|
+|label | string |name label necessary delete                 |
+|------------------------------------------------------------|
 ```
 
 #### II.1.2. Response:
@@ -204,11 +217,13 @@ label | string |name label necessary delete                 |
 ```
 - Description:
 ```table
-    Name   |  Type   |               Description                        |
------------|---------|--------------------------------------------------|
-deleted    | boolean |value True if label deleted                       |
-message    | string  |success or unsuccess                              |
-label      | string  |name label is deleted                             |
-status_code| int     |status code: 200/400/500 corresponding to message |
+|------------------------------------------------------------------------|
+|    Name   |  Type   |               Description                        |
+|-----------|---------|--------------------------------------------------|
+|deleted    | boolean |value True if label deleted                       |
+|message    | string  |success or unsuccess                              |
+|label      | string  |name label is deleted                             |
+|status_code| int     |status code: 200/400/500 corresponding to message |
+|------------------------------------------------------------------------|
 ```
 ===================================================================================================
