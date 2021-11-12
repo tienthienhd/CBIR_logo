@@ -177,10 +177,11 @@ class QueryImage:
             goods.append(len(good))
 
         logger.debug(f"List matches: {goods}")
-        half = len(goods) * 0.4
-        if len(goods) >= 10:
-            half = 10
-        if count >= half:
+        # threshold_good = len(goods) * 0.4
+        # if len(goods) >= 10:
+        #     threshold_good = 5
+        threshold_good = 4
+        if count >= threshold_good:
             logger.info(f"Image have logo, CORRECT: {count}/{len(goods)}")
             return True
         else:
@@ -228,9 +229,9 @@ class QueryImage:
         # self.visualize_match_img(img1, kp1, img2, kp2, good)
         choose_lb = None
         if lb_check is not None:
-            check_compare, good = self.take_result_compare(lb_check[0], kp1, des1, kp2, des2, check_compare)
+            check_compare, good = self.take_result_compare(lb_check, kp1, des1, kp2, des2, check_compare)
             if check_compare:
-                choose_lb = lb_check[0]
+                choose_lb = lb_check
         else:
             for lb in label:
                 check_compare, good = self.take_result_compare(lb, kp1, des1, kp2, des2, check_compare)

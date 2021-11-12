@@ -1,0 +1,245 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Compare and find logo in image",
+    "version": "1.0.0",
+    "title": "Swagger Logo Matching",
+    "contact": {
+      "email": "tienthienhd@gmail.com"
+    }
+  },
+  "host": "127.0.0.1:5000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "logo",
+      "description": "comopare and logo in image"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/check-logo": {
+      "post": {
+        "tags": [
+          "logo"
+        ],
+        "summary": "Check image has logo",
+        "description": "",
+        "operationId": "check logo",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "image",
+            "description": "image to check ",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "in": "formData",
+            "name": "label",
+            "description": "type of logo",
+            "default": "pepsi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "has_logo": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/add-logo": {
+      "post": {
+        "tags": [
+          "logo"
+        ],
+        "summary": "Check image has logo",
+        "description": "",
+        "operationId": "add logo",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "image",
+            "description": "Add logo to system",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "in": "formData",
+            "name": "label",
+            "description": "type of logo",
+            "default": "pepsi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/compare": {
+      "post": {
+        "tags": [
+          "logo"
+        ],
+        "summary": "Compare 2 logos",
+        "description": "",
+        "operationId": "compare 2 logo",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "image_1",
+            "description": "image 1",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "in": "formData",
+            "name": "image_2",
+            "description": "image 2",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "in": "formData",
+            "name": "label",
+            "description": "type of logo",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "same": {
+                  "type": "boolean"
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/delete_logo": {
+      "post": {
+        "tags": [
+          "logo"
+        ],
+        "summary": "delete all logo of label",
+        "description": "",
+        "operationId": "delete all logo of label",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "label",
+            "description": "type of logo",
+            "default": "pepsi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "deleted": {
+                  "type": "boolean"
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
