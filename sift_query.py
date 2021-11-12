@@ -178,6 +178,8 @@ class QueryImage:
 
         logger.debug(f"List matches: {goods}")
         half = len(goods) * 0.4
+        if len(goods) >= 10:
+            half = 10
         if count >= half:
             logger.info(f"Image have logo, CORRECT: {count}/{len(goods)}")
             return True
