@@ -8,12 +8,12 @@
       "email": "tienthienhd@gmail.com"
     }
   },
-  "host": "127.0.0.1:5000",
+  "host": "46.137.245.145:5000",
   "basePath": "/",
   "tags": [
     {
       "name": "logo",
-      "description": "comopare and logo in image"
+      "description": "compare and logo in image"
     }
   ],
   "schemes": [
