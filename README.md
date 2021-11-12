@@ -1,15 +1,15 @@
 
-![logopepsi](static/imgs/pepsilogo02.jpg) 
+![](file_docs/pepsi36.jpeg) 
 # [CBIR] Project compare logo
 
 ## API request tutorial document
 
-Main objective This project:
+**Main objective This project:**
 
 - Compares images, are they similar?
 - Images have logo predefined
 
-Component function:
+**Component function:**
 - Add logo to do compare data 
 - Delete logo in data
 

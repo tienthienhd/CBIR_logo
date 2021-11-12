@@ -159,8 +159,11 @@ class QueryImage:
             info.append(self.take_kp_des(kp, des, img))
         with open(self.data_path, 'w') as fp:
             fp.write(json.dumps(self.data))
-        logger.info(f"You added a logo {label} success to file json")
-        return True
+        logger.info(f"You added a logo {label} success to file json \n Quantity logo: {len(label)} | Total logo: {len(info)}")
+        return {
+            "status": True,
+            "total": len(info)
+        }
 
     def check_img_have_logo(self, img, label):
         if isinstance(img, str):

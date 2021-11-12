@@ -123,6 +123,13 @@
                 },
                 "label": {
                   "type": "string"
+                },
+                "add_logo": {
+                  "type": "boolean"
+                },
+                "total_logo": {
+                  "type": "integer",
+                  "format": "int32"
                 }
               }
             }

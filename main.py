@@ -46,7 +46,8 @@ def add_logo2json():
         "message": None,
         "add_logo": None,
         "label": None,
-        "quantity_add": None
+        "quantity_add": None,
+        "total_logo": None
     }
     try:
         parser = reqparse.RequestParser()
@@ -74,7 +75,8 @@ def add_logo2json():
             response["message"] = "success"
             response["label"] = label
             response["quantity_add"] = len(logo)
-            if check:
+            response["total_logo"] = check["total"]
+            if check["status"]:
                 response["add_logo"] = True
             else:
                 response["add_logo"] = False
