@@ -6,7 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from loguru import logger
-from sklearn.cluster import DBSCAN, KMeans
+from sklearn.cluster import DBSCAN
 
 
 class LabelNotFoundException(Exception):
@@ -50,7 +50,6 @@ class QueryImage:
         for m, n in matches:
             x.append(kp2[m.trainIdx].pt)
         kp_filted = DBSCAN(eps=5, min_samples=2).fit_predict(x)
-        # kp_filted = KMeans(n_clusters=5).fit_predict(x)
         matches_2 = []
         for i, value in enumerate(kp_filted):
             if value != -1:
@@ -160,8 +159,7 @@ class QueryImage:
             info.append(self.take_kp_des(kp, des, img))
         with open(self.data_path, 'w') as fp:
             fp.write(json.dumps(self.data))
-        logger.info(
-            f"You added a logo {label} success to file json \n Quantity logo: {len(imgs)} | Total logo: {len(info)}")
+        logger.info(f"You added a logo {label} success to file json \n Quantity logo: {len(imgs)} | Total logo: {len(info)}")
         return {
             "status": True,
             "total": len(info)
@@ -236,7 +234,8 @@ class QueryImage:
     def take_result_compare(self, lb_check, kp1, des1, kp2, des2, check_compare=False):
         count1, count2, good1 = self.check_match_kp(lb_check, kp1, des1, kp2, des2)
         half = len(good1) * .4
-        if count1 >= half and count2 >= half:
+        threshold_good = 4
+        if count1 >= threshold_good and count2 >= threshold_good:
             check_compare = True
         return check_compare, good1
 
