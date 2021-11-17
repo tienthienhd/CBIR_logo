@@ -195,7 +195,7 @@ class QueryImage:
         logger.debug(f"List matches: {dict_lb[label_max]}")
         count, good = dict_lb[label_max]['count'], len(dict_lb[label_max]['goods'])
         if label is not None:
-            if label_max == label:
+            if label_max == label and count > 0:
                 logger.info(f"Image have logo, CORRECT: {count}/{good}")
                 return label_max, True
             else:
