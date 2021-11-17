@@ -214,7 +214,8 @@ class QueryImage:
     def take_result_compare(self, lb_check, kp1, des1, kp2, des2, check_compare=False):
         count1, count2, good1 = self.check_match_kp(lb_check, kp1, des1, kp2, des2)
         half = len(good1) * .4
-        if count1 >= half and count2 >= half:
+        threshold_good = 4
+        if count1 >= threshold_good and count2 >= threshold_good:
             check_compare = True
         return check_compare, good1
 
@@ -233,8 +234,7 @@ class QueryImage:
         choose_lb = None
         if lb_check is not None:
             check_compare, good = self.take_result_compare(lb_check, kp1, des1, kp2, des2, check_compare)
-            if check_compare:
-                choose_lb = lb_check
+            choose_lb = lb_check
         else:
             for lb in label:
                 check_compare, good = self.take_result_compare(lb, kp1, des1, kp2, des2, check_compare)
@@ -244,7 +244,7 @@ class QueryImage:
 
         if check_compare:
             logger.info(f"Both pictures are of the SAME type of logo")
-        else:
+        elif lb_check is None:
             good_couple, check_couple = self.compare_img(kp1, des1, kp2, des2)
             if check_couple:
                 logger.info(f"Both pictures are of the SAME type of logo")
