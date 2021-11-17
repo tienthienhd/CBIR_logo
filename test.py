@@ -55,10 +55,10 @@ def add2json(path_logo1, path_logo2):
 
 if __name__ == "__main__":
     st = time.time()
-    CompareImg = QueryImage(rate=.65, nOctaveLayers=5)
+    CompareImg = QueryImage(rate=.6, nOctaveLayers=6)
     path = "/home/huyphuong99/Desktop/material/test/pepsicoca"
     path_img1 = f"{path}/pepsi13.jpg"
-    path_img2 = f"{path}/coca15.jpeg"
+    path_img2 = f"{path}/pepsilogo08.jpg"
     path_list_img = take_list()
     path_list_img_pepsi = take_list(type_img="pepsi*")
     compare_img_logo(path_img1, path_img2)

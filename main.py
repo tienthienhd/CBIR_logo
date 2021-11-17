@@ -36,7 +36,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 
 app.register_blueprint(swaggerui_blueprint)
 
-query_image = QueryImage(rate=.6, nOctaveLayers=6)
+query_image = QueryImage(rate=.5, nOctaveLayers=6)
 
 
 @app.route("/add-logo", methods=["GET", "POST"])
@@ -122,7 +122,7 @@ def check_logo():
                 return jsonify(response)
 
             image = query_image.convert2gray(imgs[0])
-            result = query_image.check_img_have_logo(image, label)
+            _, result = query_image.check_img_have_logo(image, label)
             response["status_code"] = 200
             response["message"] = "success"
             if result:
@@ -156,12 +156,11 @@ def compare():
     }
     try:
         parser = reqparse.RequestParser()
-        parser.add_argument("image_1", required=True, location=["form", "args", "files", "json"], action="append")
-        parser.add_argument("image_2", required=True, location=["form", "args", "files", "json"], action="append")
+        parser.add_argument("image_1", required=True, location=["form", "args", "files", "json"])
+        parser.add_argument("image_2", required=True, location=["form", "args", "files", "json"])
         parser.add_argument("label", location=["form", "args", "files", "json"])
         args_ = parser.parse_args()
-        print(args_)
-        if len(args_['image_1']) > 0 and "FileStorage" in args_['image_1'][0]:
+        if len(args_['image_1']) > 0 and "FileStorage" in args_['image_1']:
             parser.replace_argument('image_1', type=werkzeug.datastructures.FileStorage, required=True, location='files',
                                     action='append')
             parser.replace_argument('image_2', type=werkzeug.datastructures.FileStorage, required=True,

@@ -6,7 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from loguru import logger
-from sklearn.cluster import DBSCAN
+from sklearn.cluster import DBSCAN, KMeans
 
 
 class LabelNotFoundException(Exception):
@@ -50,6 +50,7 @@ class QueryImage:
         for m, n in matches:
             x.append(kp2[m.trainIdx].pt)
         kp_filted = DBSCAN(eps=5, min_samples=2).fit_predict(x)
+        # kp_filted = KMeans(n_clusters=5).fit_predict(x)
         matches_2 = []
         for i, value in enumerate(kp_filted):
             if value != -1:
@@ -159,7 +160,8 @@ class QueryImage:
             info.append(self.take_kp_des(kp, des, img))
         with open(self.data_path, 'w') as fp:
             fp.write(json.dumps(self.data))
-        logger.info(f"You added a logo {label} success to file json \n Quantity logo: {len(imgs)} | Total logo: {len(info)}")
+        logger.info(
+            f"You added a logo {label} success to file json \n Quantity logo: {len(imgs)} | Total logo: {len(info)}")
         return {
             "status": True,
             "total": len(info)
@@ -168,28 +170,48 @@ class QueryImage:
     def check_img_have_logo(self, img, label):
         if isinstance(img, str):
             img = self.read_img(img)
-        info_json = self.load_file_keypoint(label)
+
         kp, des = self.get_keypoint(img)
         # self.visualize_keypoint(img, kp)
-        goods, checks = [], []
-        count = 0
-        for i in range(len(info_json["keypoints"])):
-            good, check = self.compare_img(kp, des, info_json["keypoints"][i], info_json["deses"][i])
-            if check:
-                count += 1
-            goods.append(len(good))
 
-        logger.debug(f"List matches: {goods}")
-        # threshold_good = len(goods) * 0.4
-        # if len(goods) >= 10:
-        #     threshold_good = 5
-        threshold_good = 4
-        if count >= threshold_good:
-            logger.info(f"Image have logo, CORRECT: {count}/{len(goods)}")
-            return True
+        list_label = list(self.data.keys())
+        check_max = {}
+        dict_lb = {}
+        for lb in list_label:
+            info_json = self.load_file_keypoint(lb)
+            goods, checks = [], []
+            count = 0
+            for i in range(len(info_json["keypoints"])):
+                good, check = self.compare_img(kp, des, info_json["keypoints"][i], info_json["deses"][i])
+                if check:
+                    count += 1
+                goods.append(len(good))
+            check_max[lb] = count / len(goods)
+            dict_lb[lb] = {
+                "goods": goods,
+                "count": count
+            }
+        label_max = max(check_max, key = lambda x: check_max[x])
+        logger.debug(f"List matches all: {dict_lb}")
+        logger.debug(f"Label_max: {label_max}")
+        logger.debug(f"List matches: {dict_lb[label_max]}")
+        count, good = dict_lb[label_max]['count'], len(dict_lb[label_max]['goods'])
+        if label is not None:
+            if label_max == label:
+                logger.info(f"Image have logo, CORRECT: {count}/{good}")
+                return label_max, True
+            else:
+                logger.info(f"Image not have logo, CORRECT:  {count}/{good}")
+                return label_max, False
         else:
-            logger.info(f"Image not have logo, CORRECT:  {count}/{len(goods)}")
-            return False
+            thresh_count = 4
+            if count >= thresh_count:
+                logger.info(f"Image have logo, CORRECT: {count}/{good}")
+                return label_max, True
+            else:
+                logger.info(f"Image not have logo, CORRECT:  {count}/{good}")
+                return label_max, False
+
 
     def check_match_kp(self, lb, kp1, des1, kp2, des2):
         good1, check1 = [], []
@@ -223,24 +245,19 @@ class QueryImage:
             img1 = self.read_img(img1)
         if isinstance(img2, str):
             img2 = self.read_img(img2)
-
-        label = list(self.data.keys())
         check_compare = False
-
         kp1, des1 = self.get_keypoint(img1)
         kp2, des2 = self.get_keypoint(img2)
         # self.visualize_match_img(img1, kp1, img2, kp2, good)
         choose_lb = None
         if lb_check is not None:
+            choose_lb = lb_check
             check_compare, good = self.take_result_compare(lb_check, kp1, des1, kp2, des2, check_compare)
-            if check_compare:
-                choose_lb = lb_check
         else:
-            for lb in label:
-                check_compare, good = self.take_result_compare(lb, kp1, des1, kp2, des2, check_compare)
-                if check_compare:
-                    choose_lb = lb
-                    break
+            label1, check1 = self.check_img_have_logo(img1, lb_check)
+            label2, check2 = self.check_img_have_logo(img2, lb_check)
+            if check1 and check2:
+                check_compare = True
 
         if check_compare:
             logger.info(f"Both pictures are of the SAME type of logo")
