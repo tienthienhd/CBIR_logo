@@ -16,11 +16,12 @@ class LabelNotFoundException(Exception):
 
 class QueryImage:
     def __init__(self, max_features=None, nOctaveLayers=None, contrastThreshold=None, edgeThreshold=None, sigma=None,
-                 threshold=15, rate=0.7):
+                 threshold=15, rate=0.7, h_img = 800):
         self.sift = cv2.SIFT_create(nfeatures=max_features, nOctaveLayers=nOctaveLayers,
                                     contrastThreshold=contrastThreshold, edgeThreshold=edgeThreshold, sigma=sigma)
         self.threshold = threshold
         self.rate = rate
+        self.height = h_img
         self.data_path = './file_keypoint.json'
         if os.path.exists(self.data_path):
             with open(self.data_path) as json_file:
@@ -32,10 +33,48 @@ class QueryImage:
         else:
             self.data = {}
 
+    @staticmethod
+    def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
+        # initialize the dimensions of the image to be resized and
+        # grab the image size
+        dim = None
+        (h, w) = image.shape[:2]
+
+        # if both the width and height are None, then return the
+        # original image
+        if width is None and height is None:
+            return image
+
+        # check to see if the width is None
+        if width is None:
+            # calculate the ratio of the height and construct the
+            # dimensions
+            r = height / float(h)
+            dim = (int(w * r), height)
+
+        # otherwise, the height is None
+        else:
+            # calculate the ratio of the width and construct the
+            # dimensions
+            r = width / float(w)
+            dim = (width, int(h * r))
+
+        # resize the image
+        resized = cv2.resize(image, dim, interpolation=inter)
+
+        # return the resized image
+        return resized
+
     def read_img(self, img):
         return cv2.imread(img, cv2.IMREAD_GRAYSCALE)
 
     def convert2gray(self, img):
+        h, w, _ = img.shape
+        logger.debug(f"h: {h}, w: {w}")
+        img = self.image_resize(img, height=self.height)
+        h, w, _ = img.shape
+        logger.debug(f"h: {h}, w: {w}")
+
         return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     def matching(self, kp1, kp2, des1, des2):
@@ -45,7 +84,6 @@ class QueryImage:
 
         flann = cv2.FlannBasedMatcher(index_params, search_params)
         matches = flann.knnMatch(des1, np.float32(des2), k=2)
-
         x = []
         for m, n in matches:
             x.append(kp2[m.trainIdx].pt)
@@ -54,7 +92,6 @@ class QueryImage:
         for i, value in enumerate(kp_filted):
             if value != -1:
                 matches_2.append(matches[i])
-
         good = []
         for m, n in matches_2:
             if m.distance < self.rate * n.distance:
@@ -159,7 +196,8 @@ class QueryImage:
             info.append(self.take_kp_des(kp, des, img))
         with open(self.data_path, 'w') as fp:
             fp.write(json.dumps(self.data))
-        logger.info(f"You added a logo {label} success to file json \n Quantity logo: {len(imgs)} | Total logo: {len(info)}")
+        logger.info(
+            f"You added a logo {label} success to file json \n Quantity logo: {len(imgs)} | Total logo: {len(info)}")
         return {
             "status": True,
             "total": len(info)
@@ -180,6 +218,8 @@ class QueryImage:
             goods, checks = [], []
             count = 0
             for i in range(len(info_json["keypoints"])):
+                if i == 50:
+                    break
                 good, check = self.compare_img(kp, des, info_json["keypoints"][i], info_json["deses"][i])
                 if check:
                     count += 1
@@ -189,27 +229,26 @@ class QueryImage:
                 "goods": goods,
                 "count": count
             }
-        label_max = max(check_max, key = lambda x: check_max[x])
+        label_max = max(check_max, key=lambda x: check_max[x])
         logger.debug(f"List matches all: {dict_lb}")
         logger.debug(f"Label_max: {label_max}")
         logger.debug(f"List matches: {dict_lb[label_max]}")
         count, good = dict_lb[label_max]['count'], len(dict_lb[label_max]['goods'])
+        thresh_count = 4
         if label is not None:
-            if label_max == label and count > 0:
+            if label_max == label and count >= thresh_count:
                 logger.info(f"Image have logo, CORRECT: {count}/{good}")
                 return label_max, True
             else:
                 logger.info(f"Image not have logo, CORRECT:  {count}/{good}")
                 return label_max, False
         else:
-            thresh_count = 4
             if count >= thresh_count:
                 logger.info(f"Image have logo, CORRECT: {count}/{good}")
                 return label_max, True
             else:
                 logger.info(f"Image not have logo, CORRECT:  {count}/{good}")
                 return label_max, False
-
 
     def check_match_kp(self, lb, kp1, des1, kp2, des2):
         good1, check1 = [], []
