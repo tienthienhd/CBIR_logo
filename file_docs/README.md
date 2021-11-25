@@ -35,7 +35,7 @@ python main.py
 Thực hiện test API, được mô tả chi tiết ở file **README.md** (file cùng thư mục với file **main.py**):
 - Check có logo trong ảnh
 - Check 2 ảnh có cùng logo 
-- Thêm ảnh vào file dữ liệu logo đối sánh (**Yêu cầu**: ảnh chỉ chứa logo cần check, không chứa các background không cần thiết, các yêu cầu liên quan đã nêu ở mục _2.1.1_)
+- Thêm ảnh vào file dữ liệu logo đối sánh (**Yêu cầu**: cắt ảnh chỉ chứa logo cần check, không chứa các background không cần thiết, các yêu cầu liên quan đã nêu ở mục _2.1.1_)
 - Xóa toàn bộ logo cần đối sánh
 
 ## 2. Hướng dẫn cách sử dụng test trên swagger:
