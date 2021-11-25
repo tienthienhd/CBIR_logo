@@ -12,7 +12,7 @@
 - Thêm hình ảnh logo vào file dữ liệu
 - Xóa toàn bộ ảnh của logo được chỉ định trong file dữ liệu
 
-##1. Cách cài đặt:
+##1. Cách cài đặt tại local:
 
 ###1.1. Cài đặt python3, pip:
 **python**:
@@ -39,7 +39,7 @@ Thực hiện test API, được mô tả chi tiết ở file **README.md** (fil
 - Thêm ảnh vào file dữ liệu logo đối sánh (**Yêu cầu**: ảnh chỉ chứa logo cần check, không chứa các background không cần thiết, các yêu cầu liên quan đã nêu ở mục _2.1.1_)
 - Xóa toàn bộ logo cần đối sánh
 
-## 2. Hướng dẫn cách sử dụng:
+## 2. Hướng dẫn cách sử dụng test trên swagger:
 
 ### 2.1. Thêm hình ảnh logo vào file dữ liệu:
 **_Truy cập vào trang [http://46.137.245.145:5000](http://46.137.245.145:5000/api/docs/) để bắt đầu test_**
