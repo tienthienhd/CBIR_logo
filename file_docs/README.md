@@ -12,8 +12,8 @@
 - Thêm hình ảnh logo vào file dữ liệu
 - Xóa toàn bộ ảnh của logo được chỉ định trong file dữ liệu
 
-##1. Cách cài đặt tại local:
-###1.1. Cài đặt python3, pip:
+## 1. Cách cài đặt tại local:
+### 1.1. Cài đặt python3, pip:
 **python**:
 - Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-windows
 - Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-ubuntu <br>
@@ -22,7 +22,7 @@
 - Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/install-pip-windows
 - Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
 
-###1.2. Cài đặt môi trường:
+### 1.2. Cài đặt môi trường:
 Tại thư mục CBIR_logo, thực hiện lệnh trên command line để cài đặt toàn bộ thư viện sử dụng và các gói liên quan, cụ thể như sau:
 ```bash
 pip install -r requirement.txt
