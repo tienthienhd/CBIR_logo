@@ -11,4 +11,4 @@ urllib3
 loguru
 flask-swagger-ui
 flask-cors
-uwsgi
+waitress

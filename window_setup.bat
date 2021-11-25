@@ -1,0 +1,1 @@
+Windows6.1-KB3063858-x86.msu & python-3.8.6.exe & python -m pip install -r requirements.txt
