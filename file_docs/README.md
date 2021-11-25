@@ -61,12 +61,7 @@ như mô tả ở mục trên, tiến hành thực hiện các bước thêm ả
 - Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/install-pip-windows
 - Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
 
-###2.2. Download project CBIR_logo:
-Download code (Clone code) từ github về, tại command line thực hiện lệnh sau:
-```bash 
-git clone https://github.com/tienthienhd/CBIR_logo.git
-```
-###2.3. Cài đặt môi trường:
+###2.2. Cài đặt môi trường:
 Tại thư mục CBIR_logo, thực hiện lệnh trên command line để cài đặt toàn bộ thư viện sử dụng và các gói liên quan, cụ thể như sau:
 ```bash
 pip install -r requirement.txt
