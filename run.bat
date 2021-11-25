@@ -1,0 +1,1 @@
+uwsgi -i CBIR_logo.ini
