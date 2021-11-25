@@ -12,12 +12,37 @@
 - Thêm hình ảnh logo vào file dữ liệu
 - Xóa toàn bộ ảnh của logo được chỉ định trong file dữ liệu
 
+##1. Cách cài đặt:
+###1.1. Cài đặt python3, pip:
+**python**:
+- Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-windows
+- Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-ubuntu <br>
+
+**pip**:
+- Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/install-pip-windows
+- Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
+
+###1.2. Cài đặt môi trường:
+Tại thư mục CBIR_logo, thực hiện lệnh trên command line để cài đặt toàn bộ thư viện sử dụng và các gói liên quan, cụ thể như sau:
+```bash
+pip install -r requirement.txt
+```
+Tại file **main.py**, địa chỉ IP mặc định là **host**: [ 0.0.0.0](localhost), cổng **port**: [5000](), để thay đổi thì sửa lại **host** và **port** tương ứng, tại dòng 250 của file.<br>
+Cuối cùng, tại command line, thực hiện chạy lệnh sau để chạy chương trình:
+```bash
+python main.py
+```
+Thực hiện test API, được mô tả chi tiết ở file **README.md** (file cùng thư mục với file **main.py**):
+- Check có logo trong ảnh
+- Check 2 ảnh có cùng logo 
+- Thêm ảnh vào file dữ liệu logo đối sánh (**Yêu cầu**: ảnh chỉ chứa logo cần check, không chứa các background không cần thiết, các yêu cầu liên quan đã nêu ở mục _2.1.1_)
+- Xóa toàn bộ logo cần đối sánh
+
+## 2. Hướng dẫn cách sử dụng:
+
+### 2.1. Thêm hình ảnh logo vào file dữ liệu:
 **_Truy cập vào trang [http://46.137.245.145:5000](http://46.137.245.145:5000/api/docs/) để bắt đầu test_**
-## 1. Hướng dẫn cách sử dụng:
-
-### 1.1. Thêm hình ảnh logo vào file dữ liệu:
-
-#### 1.1.1. Mô tả:
+#### 2.1.1. Mô tả:
 
 Đầu vào gồm tập hợp các ảnh chỉ chứa vùng logo, **YÊU CẦU**:
 
@@ -37,7 +62,7 @@
       ![](./pepsilogo.jpg)
 - Hình ảnh logo nên đa dạng góc quay, kích thước.
 
-#### 1.1.2. Các bước thêm logo:
+#### 2.1.2. Các bước thêm logo:
 - Bước 1: Truy cập vào trang web đã được nêu ở trên
 - Bước 2: Chọn mục add-logo
 - Bước 3: Ấn vào button **_Try it out_** để thực hiện, gồm 2 bước:
@@ -45,35 +70,11 @@
   - Điền vào **_tên logo_** cần thêm
 - **Chú ý**: Hai thông tin này đều bắt buộc phải có
 
-### 1.2. Xóa toàn bộ ảnh của logo được chỉ định trong file dữ liệu:
+### 2.2. Xóa toàn bộ ảnh của logo được chỉ định trong file dữ liệu:
 
 Đầu vào là tên của **logo cần xóa**. Sau khi gửi yêu cầu, toàn bộ thông tin (ảnh, thông tin nhận dạng) của logo yêu cầu
 đều bị xóa. Khi thực hiện xong thì không thể khôi phục lại thông tin bị xóa. Tuy nhiên, vẫn có thể thêm lại thông tin
 như mô tả ở mục trên, tiến hành thực hiện các bước thêm ảnh như trên.
 
-##2. Cách cài đặt:
-###2.1. Cài đặt python3, pip:
-**python**:
-- Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-windows
-- Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-ubuntu <br>
 
-**pip**:
-- Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/install-pip-windows
-- Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
-
-###2.2. Cài đặt môi trường:
-Tại thư mục CBIR_logo, thực hiện lệnh trên command line để cài đặt toàn bộ thư viện sử dụng và các gói liên quan, cụ thể như sau:
-```bash
-pip install -r requirement.txt
-```
-Tại file **main.py**, địa chỉ IP mặc định là **host**: [ 0.0.0.0](localhost), cổng **port**: [5000](), để thay đổi thì sửa lại **host** và **port** tương ứng, tại dòng 250 của file.<br>
-Cuối cùng, tại command line, thực hiện chạy lệnh sau để chạy chương trình:
-```bash
-python main.py
-```
-Thực hiện test API, được mô tả chi tiết ở file **README.md** (file cùng thư mục với file **main.py**):
-- Check có logo trong ảnh
-- Check 2 ảnh có cùng logo 
-- Thêm ảnh vào file dữ liệu logo đối sánh (**Yêu cầu**: ảnh chỉ chứa logo cần check, không chứa các background không cần thiết, các yêu cầu liên quan đã nêu ở mục _1.1.1_)
-- Xóa toàn bộ logo cần đối sánh
 
