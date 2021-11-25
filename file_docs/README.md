@@ -13,7 +13,6 @@
 - Xóa toàn bộ ảnh của logo được chỉ định trong file dữ liệu
 
 ##1. Cách cài đặt tại local:
-
 ###1.1. Cài đặt python3, pip:
 **python**:
 - Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-windows
