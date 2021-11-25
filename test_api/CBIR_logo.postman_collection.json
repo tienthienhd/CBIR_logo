@@ -11,13 +11,19 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"image\": \"https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg\",\n    \"label\": \"pepsi\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/huyphuong99/Desktop/material/test/logopepsi/pepsi/pepsi25.jpeg"
+						},
+						{
+							"key": "label",
+							"value": "pepsi",
+							"type": "text"
 						}
-					}
+					]
 				},
 				"url": {
 					"raw": "{{base_url}}/check-logo",
@@ -42,35 +48,37 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca09.jpg"
+							"src": [
+								"/home/huyphuong99/Desktop/material/test/logopepsi/pepsi/pepsib05.png",
+								"/home/huyphuong99/Desktop/material/test/logopepsi/pepsi/pepsib4.jpeg",
+								"/home/huyphuong99/Desktop/material/test/logopepsi/pepsi/pepsib5.jpeg",
+								"/home/huyphuong99/Desktop/material/test/logopepsi/pepsi/pepsib2.jpg"
+							]
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca01.jpeg"
+							"src": [],
+							"disabled": true
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": []
+							"src": [],
+							"disabled": true
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca02.png",
+							"src": [],
 							"disabled": true
 						},
 						{
 							"key": "label",
-							"value": "coca",
+							"value": "pepsi",
 							"type": "text"
 						}
-					],
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					]
 				},
 				"url": {
 					"raw": "{{base_url}}/add-logo",
@@ -95,25 +103,14 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/pepsilogo02.jpg"
+							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/cocalogo01.png"
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": []
-						},
-						{
-							"key": "label",
-							"value": "pepsi",
-							"type": "text",
-							"disabled": true
+							"src": "/home/huyphuong99/Desktop/material/test/pepsicoca/coca12.jpg"
 						}
-					],
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					]
 				},
 				"url": {
 					"raw": "{{base_url}}/compare",
@@ -133,7 +130,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/delete_logo?label=",
+					"raw": "{{base_url}}/delete_logo?label=pepsi",
 					"host": [
 						"{{base_url}}"
 					],
@@ -143,7 +140,7 @@
 					"query": [
 						{
 							"key": "label",
-							"value": ""
+							"value": "pepsi"
 						}
 					]
 				}
