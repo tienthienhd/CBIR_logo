@@ -74,6 +74,6 @@ python main.py
 Thực hiện test API, được mô tả chi tiết ở file **README.md**:
 - Check có logo trong ảnh
 - Check 2 ảnh có cùng logo 
-- Thêm ảnh vào file dữ liệu logo đối sánh
+- Thêm ảnh vào file dữ liệu logo đối sánh (**Yêu cầu**: ảnh chỉ chứa logo cần check, không chứa các background không cần thiết, các yêu cầu liên quan đã nêu ở mục _1.1.1_)
 - Xóa toàn bộ logo cần đối sánh
 
