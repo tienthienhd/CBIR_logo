@@ -51,8 +51,34 @@
 đều bị xóa. Khi thực hiện xong thì không thể khôi phục lại thông tin bị xóa. Tuy nhiên, vẫn có thể thêm lại thông tin
 như mô tả ở mục trên, tiến hành thực hiện các bước thêm ảnh như trên.
 
-[comment]: <> (### 1.3. Kiểm tra trong bức ảnh có phát hiện logo được yêu cầu:)
+##2. Cách cài đặt:
+###2.1. Cài đặt python3, pip:
+**python**:
+- Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-windows
+- Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/how-to-install-python-3-ubuntu <br>
 
-[comment]: <> (### 1.4. So sánh hai bức ảnh có cùng logo hay không:)
+**pip**:
+- Đối với hệ điều hành window, xem hướng dẫn chi tiết tại: https://phoenixnap.com/kb/install-pip-windows
+- Đối với hệ điều hành ubuntu, xem hướng dẫn chi tiết tại: https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
 
+###2.2. Download project CBIR_logo:
+Download code (Clone code) từ github về, tại command line thực hiện lệnh sau:
+```bash 
+git clone https://github.com/tienthienhd/CBIR_logo.git
+```
+###2.3. Cài đặt môi trường:
+Tại thư mục CBIR_logo, thực hiện lệnh trên command line để cài đặt toàn bộ thư viện sử dụng và các gói liên quan, cụ thể như sau:
+```bash
+pip install -r requirement.txt
+```
+Tại file **main.py**, địa chỉ IP mặc định là **host**: [ 0.0.0.0](localhost), cổng **port**: [5000](), để thay đổi thì sửa lại **host** và **port** tương ứng, tại dòng 250 của file.<br>
+Cuối cùng, tại command line, thực hiện chạy lệnh sau để chạy chương trình:
+```bash
+python main.py
+```
+Thực hiện test API, được mô tả chi tiết ở file **README.md**:
+- Check có logo trong ảnh
+- Check 2 ảnh có cùng logo 
+- Thêm ảnh vào file dữ liệu logo đối sánh
+- Xóa toàn bộ logo cần đối sánh
 
