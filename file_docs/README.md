@@ -71,7 +71,7 @@ Cuối cùng, tại command line, thực hiện chạy lệnh sau để chạy c
 ```bash
 python main.py
 ```
-Thực hiện test API, được mô tả chi tiết ở file **README.md**:
+Thực hiện test API, được mô tả chi tiết ở file **README.md** (file cùng thư mục với file **main.py**):
 - Check có logo trong ảnh
 - Check 2 ảnh có cùng logo 
 - Thêm ảnh vào file dữ liệu logo đối sánh (**Yêu cầu**: ảnh chỉ chứa logo cần check, không chứa các background không cần thiết, các yêu cầu liên quan đã nêu ở mục _1.1.1_)
