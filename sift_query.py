@@ -232,17 +232,19 @@ class QueryImage:
         label_max = max(check_max, key=lambda x: check_max[x])
         logger.debug(f"List matches all: {dict_lb}")
         logger.debug(f"Label_max: {label_max}")
-        logger.debug(f"List matches: {dict_lb[label_max]}")
-        count, good = dict_lb[label_max]['count'], len(dict_lb[label_max]['goods'])
+        logger.debug(f"List matches max: {dict_lb[label_max]}")
         thresh_count = 4
-        if label is not None:
-            if label_max == label and count >= thresh_count:
+        if label is not None and label in dict_lb:
+            logger.debug(f"List matches label: {dict_lb[label]}")
+            count, good = dict_lb[label]['count'], len(dict_lb[label]['goods'])
+            if count >= thresh_count:
                 logger.info(f"Image have logo, CORRECT: {count}/{good}")
-                return label_max, True
+                return label, True
             else:
                 logger.info(f"Image not have logo, CORRECT:  {count}/{good}")
-                return label_max, False
+                return label, False
         else:
+            count, good = dict_lb[label_max]['count'], len(dict_lb[label_max]['goods'])
             if count >= thresh_count:
                 logger.info(f"Image have logo, CORRECT: {count}/{good}")
                 return label_max, True
