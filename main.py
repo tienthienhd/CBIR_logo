@@ -53,8 +53,8 @@ def add_logo2json():
     }
     try:
         parser = reqparse.RequestParser()
-        parser.add_argument("image", required=True, location=["form", "args", "files", "json"], action="append")
-        parser.add_argument("label", required=False, location=["form", "args", "files", "json"])
+        parser.add_argument("image", required=True, location=["form", "args", "files"], action="append")
+        parser.add_argument("label", required=False, location=["form", "args", "files"])
         args_ = parser.parse_args()
         if len(args_['image']) > 0 and "FileStorage" in args_['image'][0]:
             parser.replace_argument('image', type=werkzeug.datastructures.FileStorage, required=True, location='files',
@@ -106,8 +106,8 @@ def check_logo():
     }
     try:
         parser = reqparse.RequestParser()
-        parser.add_argument("image", required=True, location=["form", "args", "files", "json"], action="append")
-        parser.add_argument("label", required=True, location=["form", "args", "files", "json"])
+        parser.add_argument("image", required=True, location=["form", "args", "files"], action="append")
+        parser.add_argument("label", required=True, location=["form", "args", "files"])
         args_ = parser.parse_args()
         if len(args_['image']) > 0 and "FileStorage" in args_['image'][0]:
             parser.replace_argument('image', type=werkzeug.datastructures.FileStorage, required=True, location='files',
@@ -158,9 +158,9 @@ def compare():
     }
     try:
         parser = reqparse.RequestParser()
-        parser.add_argument("image_1", required=True, location=["form", "args", "files", "json"])
-        parser.add_argument("image_2", required=True, location=["form", "args", "files", "json"])
-        parser.add_argument("label", location=["form", "args", "files", "json"])
+        parser.add_argument("image_1", required=True, location=["form", "args", "files"])
+        parser.add_argument("image_2", required=True, location=["form", "args", "files"])
+        parser.add_argument("label", location=["form", "args", "files"])
         args_ = parser.parse_args()
         if len(args_['image_1']) > 0 and "FileStorage" in args_['image_1']:
             parser.replace_argument('image_1', type=werkzeug.datastructures.FileStorage, required=True, location='files',
@@ -217,8 +217,8 @@ def delete_logo():
     }
     try:
         parser = reqparse.RequestParser()
-        parser.add_argument("label", required=True, location=["form", "args", "files", "json"])
-        args_ = parser.parse_args(strict=True)
+        parser.add_argument("label", required=True, location=["form", "args", "files"])
+        args_ = parser.parse_args(strict=False)
         label = args_["label"]
         if request.method == "POST":
             result = query_image.delete_logo(label)

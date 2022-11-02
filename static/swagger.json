@@ -8,7 +8,7 @@
       "email": "tienthienhd@gmail.com"
     }
   },
-  "host": "46.137.245.145:5000",
+  "host": "0.0.0.0:5000",
   "basePath": "/",
   "tags": [
     {
@@ -85,7 +85,7 @@
           "multipart/form-data"
         ],
         "produces": [
-          "application/json"
+          "multipart/form-data"
         ],
         "parameters": [
           {
