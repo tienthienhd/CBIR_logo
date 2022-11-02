@@ -211,6 +211,9 @@ class QueryImage:
         # self.visualize_keypoint(img, kp)
 
         list_label = list(self.data.keys())
+        if label not in list_label:
+            return label, False
+
         check_max = {}
         dict_lb = {}
         for lb in list_label:
